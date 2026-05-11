@@ -884,9 +884,16 @@ loadKhanza();
 INVOICE
 ========================= */
 
+/* =========================
+INVOICE
+========================= */
+
 window.tambahInvoice = function(){
+
 const tbody = document.getElementById('invoiceBody');
+
 const row = document.createElement('tr');
+
 row.innerHTML = `
 <td><input type="date" class="tanggal"></td>
 <td><input type="text" class="noinvoice"></td>
@@ -894,28 +901,178 @@ row.innerHTML = `
 <td><input type="text" class="pekerjaan"></td>
 <td><input type="number" class="nilai"></td>
 <td><input type="text" class="keterangan"></td>
+
 <td>
+
 <div class="aksi-wrap">
-<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
-<button class="btn-save" onclick="simpanInvoice(this)">Simpan</button>
+
+<button class="btn-delete"
+onclick="hapusBaris(this)">
+Hapus
+</button>
+
+<button class="btn-save"
+onclick="simpanInvoice(this)">
+Simpan
+</button>
+
+<button class="btn-create"
+onclick="buatInvoice(this)">
+Buat
+</button>
+
 </div>
-</td>`;
+
+</td>
+`;
+
 tbody.appendChild(row);
+
 }
 
 window.simpanInvoice = async function(button){
+
 const row = button.closest('tr');
+
 const data = {
+
 tanggal: row.querySelector('.tanggal').value,
 noinvoice: row.querySelector('.noinvoice').value,
 perusahaan: row.querySelector('.perusahaan').value,
 pekerjaan: row.querySelector('.pekerjaan').value,
 nilai: row.querySelector('.nilai').value,
 keterangan: row.querySelector('.keterangan').value
+
 };
+
 await addDoc(collection(db,'invoice'),data);
+
 alert('Invoice berhasil disimpan');
+
 loadInvoice();
+
+}
+
+async function loadInvoice(){
+
+const tbody = document.getElementById('invoiceBody');
+
+tbody.innerHTML='';
+
+const querySnapshot = await getDocs(collection(db,'invoice'));
+
+querySnapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+
+<td>${data.tanggal}</td>
+<td>${data.noinvoice}</td>
+<td>${data.perusahaan}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+
+<td>
+
+<div class="aksi-wrap">
+
+<button class="btn-delete"
+onclick="hapusInvoiceFirebase('${docSnap.id}')">
+Hapus
+</button>
+
+<button class="btn-create"
+onclick="buatInvoice(this)">
+Buat
+</button>
+
+</div>
+
+</td>
+
+`;
+
+tbody.appendChild(row);
+
+});
+
+}
+
+window.hapusInvoiceFirebase = async function(id){
+
+await deleteDoc(doc(db,'invoice',id));
+
+loadInvoice();
+
+}
+
+/* =========================
+DOWNLOAD INVOICE EXCEL
+========================= */
+
+window.buatInvoice = async function(button){
+
+const row = button.closest('tr');
+
+let tanggal = '';
+let noinvoice = '';
+
+if(row.querySelector('.tanggal')){
+
+tanggal = row.querySelector('.tanggal').value;
+noinvoice = row.querySelector('.noinvoice').value;
+
+}else{
+
+tanggal = row.children[0].innerText;
+noinvoice = row.children[1].innerText;
+
+}
+
+try{
+
+const response = await fetch('invoice.xlsx');
+
+if(!response.ok){
+
+throw new Error('invoice.xlsx tidak ditemukan');
+
+}
+
+const arrayBuffer = await response.arrayBuffer();
+
+const workbook = XLSX.read(arrayBuffer,{type:'array'});
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+/* ISI CELL */
+
+sheet['J7'] = {
+t:'s',
+v:tanggal
+};
+
+sheet['J8'] = {
+t:'s',
+v:noinvoice
+};
+
+/* DOWNLOAD */
+
+XLSX.writeFile(workbook,`${noinvoice || 'invoice'}.xlsx`);
+
+}catch(error){
+
+console.log(error);
+
+alert('File invoice.xlsx tidak ditemukan');
+
+}
+
 }
 
 async function loadInvoice(){
@@ -946,9 +1103,16 @@ loadInvoice();
 PENAWARAN
 ========================= */
 
+/* =========================
+PENAWARAN
+========================= */
+
 window.tambahPenawaran = function(){
+
 const tbody = document.getElementById('penawaranBody');
+
 const row = document.createElement('tr');
+
 row.innerHTML = `
 <td><input type="date" class="tanggal"></td>
 <td><input type="text" class="nopenawaran"></td>
@@ -956,28 +1120,186 @@ row.innerHTML = `
 <td><input type="text" class="pekerjaan"></td>
 <td><input type="number" class="nilai"></td>
 <td><input type="text" class="keterangan"></td>
+
 <td>
+
 <div class="aksi-wrap">
-<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
-<button class="btn-save" onclick="simpanPenawaran(this)">Simpan</button>
+
+<button class="btn-delete"
+onclick="hapusBaris(this)">
+Hapus
+</button>
+
+<button class="btn-save"
+onclick="simpanPenawaran(this)">
+Simpan
+</button>
+
+<button class="btn-create"
+onclick="buatPenawaran(this)">
+Buat
+</button>
+
 </div>
-</td>`;
+
+</td>
+`;
+
 tbody.appendChild(row);
+
 }
 
 window.simpanPenawaran = async function(button){
+
 const row = button.closest('tr');
+
 const data = {
+
 tanggal: row.querySelector('.tanggal').value,
 nomor: row.querySelector('.nopenawaran').value,
 perusahaan: row.querySelector('.perusahaan').value,
 pekerjaan: row.querySelector('.pekerjaan').value,
 nilai: row.querySelector('.nilai').value,
 keterangan: row.querySelector('.keterangan').value
+
 };
+
 await addDoc(collection(db,'penawaran'),data);
+
 alert('Penawaran berhasil disimpan');
+
 loadPenawaran();
+
+}
+
+async function loadPenawaran(){
+
+const tbody = document.getElementById('penawaranBody');
+
+tbody.innerHTML='';
+
+const querySnapshot = await getDocs(collection(db,'penawaran'));
+
+querySnapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+
+<td>${data.tanggal}</td>
+<td>${data.nomor}</td>
+<td>${data.perusahaan}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+
+<td>
+
+<div class="aksi-wrap">
+
+<button class="btn-delete"
+onclick="hapusPenawaran('${docSnap.id}')">
+Hapus
+</button>
+
+<button class="btn-create"
+onclick="buatPenawaran(this)">
+Buat
+</button>
+
+</div>
+
+</td>
+
+`;
+
+tbody.appendChild(row);
+
+});
+
+}
+
+window.hapusPenawaran = async function(id){
+
+await deleteDoc(doc(db,'penawaran',id));
+
+loadPenawaran();
+
+}
+
+/* =========================
+DOWNLOAD PENAWARAN EXCEL
+========================= */
+
+window.buatPenawaran = async function(button){
+
+const row = button.closest('tr');
+
+let tanggal = '';
+let nomor = '';
+let perusahaan = '';
+
+if(row.querySelector('.tanggal')){
+
+tanggal = row.querySelector('.tanggal').value;
+nomor = row.querySelector('.nopenawaran').value;
+perusahaan = row.querySelector('.perusahaan').value;
+
+}else{
+
+tanggal = row.children[0].innerText;
+nomor = row.children[1].innerText;
+perusahaan = row.children[2].innerText;
+
+}
+
+try{
+
+const response = await fetch('Penawaran harga.xlsx');
+
+if(!response.ok){
+
+throw new Error('Penawaran harga.xlsx tidak ditemukan');
+
+}
+
+const arrayBuffer = await response.arrayBuffer();
+
+const workbook = XLSX.read(arrayBuffer,{type:'array'});
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+/* ISI CELL */
+
+sheet['D7'] = {
+t:'s',
+v:tanggal
+};
+
+sheet['D10'] = {
+t:'s',
+v:perusahaan
+};
+
+sheet['J7'] = {
+t:'s',
+v:nomor
+};
+
+/* DOWNLOAD */
+
+XLSX.writeFile(workbook,`${nomor || 'penawaran'}.xlsx`);
+
+}catch(error){
+
+console.log(error);
+
+alert('File Penawaran harga.xlsx tidak ditemukan');
+
+}
+
 }
 
 async function loadPenawaran(){
