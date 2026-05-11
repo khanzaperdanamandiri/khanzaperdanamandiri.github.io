@@ -21,15 +21,6 @@ body{
 font-family:'Poppins',sans-serif;
 background:#f4f8fc;
 }
-
-.sidebar{
-width:280px;
-height:100vh;
-position:fixed;
-left:0;
-top:0;
-background:linear-gradient(180deg,#0f4c81,#1f78d1);
-color:white;
 padding:30px 20px;
 overflow:auto;
 }
@@ -58,4 +49,299 @@ margin-bottom:15px;
 .sidebar ul li a{
 text-decoration:none;
 color:white;
+display:block;
+padding:14px 18px;
+border-radius:12px;
+transition:0.3s;
+font-weight:500;
+}
+
+.sidebar ul li a:hover{
+background:rgba(255,255,255,0.15);
+}
+
+.main{
+margin-left:280px;
+padding:40px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:35px;
+}
+
+.topbar h1{
+color:#0f4c81;
+}
+padding:35px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+.card h2{
+color:#0f4c81;
+margin-bottom:25px;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.form-group{
+margin-bottom:20px;
+}
+
+.form-group label{
+display:block;
+margin-bottom:8px;
+font-weight:600;
+color:#0f4c81;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+padding:15px;
+border-radius:12px;
+border:1px solid #d7d7d7;
+font-size:15px;
+background:#f8fbff;
+}
+
+.form-group textarea{
+resize:vertical;
+}
+
+.submit-btn{
+background:linear-gradient(135deg,#0f4c81,#1f78d1);
+color:white;
+border:none;
+padding:15px 25px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+font-size:15px;
+}
+
+.report-item{
+background:#f8fbff;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+border-left:5px solid #0f4c81;
+}
+
+.report-item h3{
+color:#0f4c81;
+margin-bottom:10px;
+}
+
+@media(max-width:900px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+
+<img src="logo.png" alt="Logo">
+
+<h2>Dashboard Admin</h2>
+<div class="stat-card">
+<h3>Total Proyek</h3>
+<h2>12</h2>
+</div>
+
+<div class="stat-card">
+<h3>Laporan Bulan Ini</h3>
+<h2>24</h2>
+</div>
+
+<div class="stat-card">
+<h3>Pengadaan Aktif</h3>
+<h2>8</h2>
+</div>
+
+<div class="stat-card">
+<h3>Invoice</h3>
+<h2>15</h2>
+</div>
+
+</div>
+
+<div class="card" id="laporan">
+
+<h2>Input Laporan Proyek</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Nama Proyek</label>
+<input type="text" id="project">
+</div>
+
+<div class="form-group">
+<label>Kategori</label>
+<select id="category">
+<option>Pekerjaan Konstruksi</option>
+<option>Pengadaan Barang</option>
+<option>General Trading</option>
+<option>Mekanikal & Elektrikal</option>
+<option>Plumbing & Sipil</option>
+</select>
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Tanggal</label>
+<input type="date" id="date">
+</div>
+
+<div class="form-group">
+<label>Laporan / Progress</label>
+<textarea rows="5" id="report"></textarea>
+</div>
+
+<button class="submit-btn" onclick="saveReport()">
+Simpan Laporan
+</button>
+
+<div id="reportBox"></div>
+
+</div>
+
+<div class="card" id="invoice">
+
+<h2>Pembuatan Invoice</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Nomor Invoice</label>
+<input type="text" placeholder="INV-001">
+</div>
+
+<div class="form-group">
+<label>Nama Client</label>
+<input type="text">
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Deskripsi Pekerjaan</label>
+<textarea rows="4"></textarea>
+</div>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Total Tagihan</label>
+<input type="text">
+</div>
+
+<div class="form-group">
+<label>Tanggal Invoice</label>
+<input type="date">
+</div>
+
+</div>
+
+<button class="submit-btn">
+Buat Invoice
+</button>
+
+</div>
+<input type="text">
+</div>
+
+<div class="form-group">
+<label>Nama Perusahaan / Client</label>
+<input type="text">
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Rincian Penawaran</label>
+<textarea rows="5"></textarea>
+</div>
+
+<div class="form-group">
+<label>Total Penawaran</label>
+<input type="text">
+</div>
+
+<button class="submit-btn">
+Simpan Penawaran
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+if(localStorage.getItem('login') !== 'true'){
+window.location.href = 'login.html';
+}
+
+function logout(){
+localStorage.removeItem('login');
+window.location.href = 'login.html';
+}
+
+function saveReport(){
+
+const project = document.getElementById('project').value;
+const category = document.getElementById('category').value;
+const date = document.getElementById('date').value;
+const report = document.getElementById('report').value;
+
+const reportBox = document.getElementById('reportBox');
+
+const item = document.createElement('div');
+item.classList.add('report-item');
+
+item.innerHTML = `
+<h3>${project}</h3>
+<p><b>Kategori:</b> ${category}</p>
+<p><b>Tanggal:</b> ${date}</p>
+<p>${report}</p>
+`;
+
+reportBox.prepend(item);
+
+alert('Laporan berhasil disimpan');
+
+}
+
+</script>
+
+</body>
 </html>
+
