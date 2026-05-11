@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+</div>
+
+<div class="form-group">
+<label>Tanggal</label>
+<input type="date" id="date">
+</div>
+
+<div class="form-group">
+<label>Laporan / Progress</label>
+<textarea rows="6" id="report"></textarea>
+</div>
+
+<button class="submit-btn" onclick="saveReport()">
+Simpan Laporan
+</button>
+
+</div>
+
+<div class="report-box" id="reportBox"></div>
+
+</div>
+
+<script>
+
+if(localStorage.getItem('login') !== 'true'){
+window.location.href = 'login.html';
+}
+
+function logout(){
+localStorage.removeItem('login');
+window.location.href = 'login.html';
+}
+
+function saveReport(){
+
+const project = document.getElementById('project').value;
+const category = document.getElementById('category').value;
+const date = document.getElementById('date').value;
+const report = document.getElementById('report').value;
+
+const reportBox = document.getElementById('reportBox');
+
+const item = document.createElement('div');
+item.classList.add('report-item');
+
+item.innerHTML = `
+<h3>${project}</h3>
+<p><b>Kategori:</b> ${category}</p>
+<p><b>Tanggal:</b> ${date}</p>
+<p>${report}</p>
+`;
+
+reportBox.prepend(item);
+
+alert('Laporan berhasil disimpan');
+
+}
+
+</script>
+
+</body>
+</html>
