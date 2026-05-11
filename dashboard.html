@@ -7,339 +7,12 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:'Poppins',sans-serif;
-background:#f4f8fc;
-}
-
-.sidebar{
-width:280px;
-height:100vh;
-position:fixed;
-left:0;
-top:0;
-background:linear-gradient(180deg,#0f4c81,#1f78d1);
-color:white;
-padding:30px 20px;
-overflow:auto;
-}
-
-.sidebar img{
-width:90px;
-display:block;
-margin:auto;
-margin-bottom:20px;
-}
-
-.sidebar h2{
-text-align:center;
-margin-bottom:40px;
-font-size:22px;
-}
-
-.sidebar ul{
-list-style:none;
-}
-
-.sidebar ul li{
-margin-bottom:15px;
-}
-
-.sidebar ul li a{
-text-decoration:none;
-color:white;
-display:block;
-padding:14px 18px;
-border-radius:12px;
-transition:0.3s;
-font-weight:500;
-}
-
-.sidebar ul li a:hover{
-background:rgba(255,255,255,0.15);
-}
-
-.main{
-margin-left:280px;
-padding:40px;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:35px;
-}
-
-.topbar h1{
-color:#0f4c81;
-}
-
-.logout-btn{
-background:red;
-color:white;
-border:none;
-padding:12px 18px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-}
-
-.card{
-background:white;
-padding:35px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
-margin-bottom:30px;
-}
-
-.card h2{
-color:#0f4c81;
-margin-bottom:25px;
-}
-
-.table-wrap{
-overflow:auto;
-}
-
-.table{
-width:100%;
-border-collapse:collapse;
-}
-
-.table th,
-.table td{
-padding:14px;
-border:1px solid #d7d7d7;
-text-align:left;
-font-size:14px;
-}
-
-.table th{
-background:#0f4c81;
-color:white;
-}
-
-.table input{
-width:100%;
-padding:10px;
-border:1px solid #ccc;
-border-radius:8px;
-}
-
-.btn{
-border:none;
-padding:12px 18px;
-border-radius:10px;
-font-weight:600;
-cursor:pointer;
-}
-
-.btn-add{
-background:#1f78d1;
-color:white;
-margin-bottom:20px;
-}
-
-.btn-delete{
-background:red;
-color:white;
-}
-
-.btn-create{
-background:#0f4c81;
-color:white;
-}
-
-@media(max-width:900px){
-
-.sidebar{
-position:relative;
-width:100%;
-height:auto;
-}
-
-.main{
-margin-left:0;
-padding:20px;
-}
-
-}
-
-</style>
-</head>
-<body>
-
-<div class="sidebar">
-
-<img src="logo.png" alt="Logo">
-
-<h2>Dashboard Admin</h2>
-
-<ul>
-<li><a href="#keuangan">📊 Laporan Keuangan</a></li>
-<li><a href="#invoice">🧾 Invoice</a></li>
-<li><a href="#penawaran">💰 Penawaran Harga</a></li>
-</ul>
-
-</div>
-
-<div class="main">
-
-<div class="topbar">
-<h1>Dashboard Perusahaan</h1>
-<button class="logout-btn" onclick="logout()">Logout</button>
-</div>
-
-<div class="card" id="keuangan">
-<h2>Laporan Keuangan</h2>
-<p>Menu laporan keuangan perusahaan.</p>
-</div>
-
-<div class="card" id="invoice">
-
-<h2>Data Invoice</h2>
-
-<button class="btn btn-add" onclick="tambahRow()">
-+ Tambah Data
-</button>
-
-<div class="table-wrap">
-
-<table class="table" id="invoiceTable">
-
-<thead>
-<tr>
-<th>No</th>
-<th>Tanggal</th>
-<th>No. Invoice</th>
-<th>Perusahaan</th>
-<th>Pekerjaan</th>
-<th>Nilai</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-
-<tbody>
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<div class="card" id="penawaran">
-<h2>Penawaran Harga</h2>
-<p>Menu penawaran harga perusahaan.</p>
-</div>
-
-</div>
-
-<script>
-
-if(localStorage.getItem('login') !== 'true'){
-window.location.href = 'login.html';
-}
-
-function logout(){
-localStorage.removeItem('login');
-window.location.href = 'login.html';
-}
-
-let nomor = 1;
-
-function tambahRow(){
-
-const tbody = document.querySelector('#invoiceTable tbody');
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td>${nomor}</td>
-<td><input type="date" class="tanggal"></td>
-<td><input type="text" class="invoice"></td>
-<td><input type="text" class="perusahaan"></td>
-<td><input type="text" class="pekerjaan"></td>
-<td><input type="text" class="nilai"></td>
-<td><input type="text" class="keterangan"></td>
-<td>
-<div style="display:flex;gap:10px;">
-<button class="btn btn-delete" onclick="hapusRow(this)">Hapus</button>
-<button class="btn btn-create" onclick="buatInvoice(this)">Buat</button>
-</div>
-</td>
-`;
-
-tbody.appendChild(row);
-nomor++;
-
-}
-
-function hapusRow(button){
-button.closest('tr').remove();
-}
-
-async function buatInvoice(button){
-
-const row = button.closest('tr');
-
-const tanggal = row.querySelector('.tanggal').value;
-const invoice = row.querySelector('.invoice').value;
-const perusahaan = row.querySelector('.perusahaan').value;
-
-const response = await fetch('invoice.xlsx');
-const buffer = await response.arrayBuffer();
-
-const workbook = new ExcelJS.Workbook();
-await workbook.xlsx.load(buffer);
-
-const worksheet = workbook.worksheets[0];
-
-worksheet.getCell('D17').value = perusahaan;
-worksheet.getCell('J14').value = tanggal;
-worksheet.getCell('J15').value = invoice;
-
-const newBuffer = await workbook.xlsx.writeBuffer();
-
-saveAs(
-new Blob([newBuffer], {
-type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-}),
-`Invoice-${invoice}.xlsx`
-);
-
-}
-
-</script>
-
-</body>
-</html>
-```html
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Admin</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -506,6 +179,7 @@ border-radius:12px;
 cursor:pointer;
 font-weight:600;
 font-size:15px;
+margin-right:10px;
 }
 
 .report-item{
@@ -519,6 +193,61 @@ border-left:5px solid #0f4c81;
 .report-item h3{
 color:#0f4c81;
 margin-bottom:10px;
+}
+
+.table-wrap{
+overflow:auto;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+.table th,
+.table td{
+padding:12px;
+border:1px solid #ddd;
+text-align:left;
+font-size:14px;
+}
+
+.table th{
+background:#0f4c81;
+color:white;
+}
+
+.table input{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.btn{
+border:none;
+padding:10px 16px;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+font-size:14px;
+}
+
+.btn-add{
+background:#1f78d1;
+color:white;
+margin-bottom:15px;
+}
+
+.btn-delete{
+background:red;
+color:white;
+}
+
+.btn-create{
+background:#0f4c81;
+color:white;
 }
 
 @media(max-width:900px){
@@ -542,6 +271,7 @@ grid-template-columns:1fr;
 
 </style>
 </head>
+
 <body>
 
 <div class="sidebar">
@@ -554,8 +284,7 @@ grid-template-columns:1fr;
 <li><a href="#laporan">📋 Input Laporan</a></li>
 <li><a href="#invoice">🧾 Invoice</a></li>
 <li><a href="#penawaran">💰 Penawaran Harga</a></li>
-<li><a href="#proyek">🏗️ Data Proyek</a></li>
-<li><a href="#pengadaan">📦 Pengadaan Barang</a></li>
+<li><a href="#keuangan">📊 Laporan Keuangan</a></li>
 </ul>
 
 </div>
@@ -591,6 +320,7 @@ grid-template-columns:1fr;
 
 </div>
 
+<!-- INPUT LAPORAN -->
 <div class="card" id="laporan">
 
 <h2>Input Laporan Proyek</h2>
@@ -604,6 +334,7 @@ grid-template-columns:1fr;
 
 <div class="form-group">
 <label>Kategori</label>
+
 <select id="category">
 <option>Pekerjaan Konstruksi</option>
 <option>Pengadaan Barang</option>
@@ -611,6 +342,7 @@ grid-template-columns:1fr;
 <option>Mekanikal & Elektrikal</option>
 <option>Plumbing & Sipil</option>
 </select>
+
 </div>
 
 </div>
@@ -633,49 +365,43 @@ Simpan Laporan
 
 </div>
 
+<!-- INVOICE -->
 <div class="card" id="invoice">
 
-<h2>Pembuatan Invoice</h2>
+<h2>Data Invoice</h2>
 
-<div class="form-grid">
-
-<div class="form-group">
-<label>Nomor Invoice</label>
-<input type="text" placeholder="INV-001">
-</div>
-
-<div class="form-group">
-<label>Nama Client</label>
-<input type="text">
-</div>
-
-</div>
-
-<div class="form-group">
-<label>Deskripsi Pekerjaan</label>
-<textarea rows="4"></textarea>
-</div>
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Total Tagihan</label>
-<input type="text">
-</div>
-
-<div class="form-group">
-<label>Tanggal Invoice</label>
-<input type="date">
-</div>
-
-</div>
-
-<button class="submit-btn">
-Buat Invoice
+<button class="btn btn-add" onclick="tambahRow()">
++ Tambah Data
 </button>
 
+<div class="table-wrap">
+
+<table class="table" id="invoiceTable">
+
+<thead>
+<tr>
+<th>No</th>
+<th>Tanggal</th>
+<th>No. Invoice</th>
+<th>Perusahaan</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
 </div>
 
+</div>
+
+<!-- PENAWARAN -->
 <div class="card" id="penawaran">
 
 <h2>Pembuatan Penawaran Harga</h2>
@@ -710,6 +436,17 @@ Simpan Penawaran
 
 </div>
 
+<!-- KEUANGAN -->
+<div class="card" id="keuangan">
+
+<h2>Laporan Keuangan</h2>
+
+<p>
+Menu laporan keuangan perusahaan.
+</p>
+
+</div>
+
 </div>
 
 <script>
@@ -719,10 +456,13 @@ window.location.href = 'login.html';
 }
 
 function logout(){
+
 localStorage.removeItem('login');
 window.location.href = 'login.html';
+
 }
 
+/* SIMPAN LAPORAN */
 function saveReport(){
 
 const project = document.getElementById('project').value;
@@ -730,9 +470,17 @@ const category = document.getElementById('category').value;
 const date = document.getElementById('date').value;
 const report = document.getElementById('report').value;
 
+if(project === '' || report === ''){
+
+alert('Lengkapi data laporan');
+return;
+
+}
+
 const reportBox = document.getElementById('reportBox');
 
 const item = document.createElement('div');
+
 item.classList.add('report-item');
 
 item.innerHTML = `
@@ -744,7 +492,149 @@ item.innerHTML = `
 
 reportBox.prepend(item);
 
+document.getElementById('project').value = '';
+document.getElementById('date').value = '';
+document.getElementById('report').value = '';
+
 alert('Laporan berhasil disimpan');
+
+}
+
+/* INVOICE */
+let nomor = 1;
+
+function tambahRow(){
+
+const tbody = document.querySelector('#invoiceTable tbody');
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+<td>${nomor}</td>
+
+<td>
+<input type="date" class="tanggal">
+</td>
+
+<td>
+<input type="text" class="invoice" placeholder="INV-001">
+</td>
+
+<td>
+<input type="text" class="perusahaan" placeholder="Nama Perusahaan">
+</td>
+
+<td>
+<input type="text" class="pekerjaan" placeholder="Nama Pekerjaan">
+</td>
+
+<td>
+<input type="text" class="nilai" placeholder="Rp. 0">
+</td>
+
+<td>
+<input type="text" class="keterangan" placeholder="Keterangan">
+</td>
+
+<td>
+
+<div style="display:flex;gap:10px;">
+
+<button class="btn btn-delete" onclick="hapusRow(this)">
+Hapus
+</button>
+
+<button class="btn btn-create" onclick="buatInvoice(this)">
+Buat
+</button>
+
+</div>
+
+</td>
+`;
+
+tbody.appendChild(row);
+
+nomor++;
+
+}
+
+/* HAPUS ROW */
+function hapusRow(button){
+
+button.closest('tr').remove();
+
+}
+
+/* BUAT EXCEL INVOICE */
+async function buatInvoice(button){
+
+const row = button.closest('tr');
+
+const tanggal = row.querySelector('.tanggal').value;
+const invoice = row.querySelector('.invoice').value;
+const perusahaan = row.querySelector('.perusahaan').value;
+const pekerjaan = row.querySelector('.pekerjaan').value;
+const nilai = row.querySelector('.nilai').value;
+const keterangan = row.querySelector('.keterangan').value;
+
+if(
+tanggal === '' ||
+invoice === '' ||
+perusahaan === ''
+){
+
+alert('Lengkapi data invoice');
+return;
+
+}
+
+try{
+
+const response = await fetch('invoice.xlsx');
+
+const buffer = await response.arrayBuffer();
+
+const workbook = new ExcelJS.Workbook();
+
+await workbook.xlsx.load(buffer);
+
+const worksheet = workbook.worksheets[0];
+
+/* ISI CELL EXCEL */
+worksheet.getCell('D17').value = perusahaan;
+worksheet.getCell('J14').value = tanggal;
+worksheet.getCell('J15').value = invoice;
+
+/* TAMBAHAN */
+worksheet.getCell('D20').value = pekerjaan;
+worksheet.getCell('J20').value = nilai;
+worksheet.getCell('D22').value = keterangan;
+
+const newBuffer = await workbook.xlsx.writeBuffer();
+
+saveAs(
+
+new Blob(
+[newBuffer],
+{
+type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}
+),
+
+`Invoice-${invoice}.xlsx`
+
+);
+
+alert('Invoice berhasil dibuat');
+
+}catch(error){
+
+console.log(error);
+
+alert('invoice.xlsx tidak ditemukan');
+
+}
 
 }
 
