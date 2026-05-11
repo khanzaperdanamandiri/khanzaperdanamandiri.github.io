@@ -14,30 +14,30 @@
     <style>
         *{ margin:0; padding:0; box-sizing:border-box; }
         body{ font-family:'Poppins',sans-serif; background:#eef3f9; }
-        .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; }
-        .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
-        .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
-        .sidebar ul{ list-style:none; }
-        .sidebar ul li{ margin-bottom:15px; }
-        .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
-        .sidebar ul li a:hover, .sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
-        .main{ margin-left:270px; padding:35px; }
-        .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-        .topbar h1{ color:#0f4c81; font-size:30px; }
-        .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
-        .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
-        .card h2{ margin-bottom:20px; color:#0f4c81; }
-        .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
+       .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; }
+       .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
+       .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
+       .sidebar ul{ list-style:none; }
+       .sidebar ul li{ margin-bottom:15px; }
+       .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
+       .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
+       .main{ margin-left:270px; padding:35px; }
+       .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+       .topbar h1{ color:#0f4c81; font-size:30px; }
+       .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
+       .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
+       .card h2{ margin-bottom:20px; color:#0f4c81; }
+       .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
         table{ width:100%; border-collapse:collapse; }
         table th, table td{ border:1px solid #ddd; padding:12px; }
         table th{ background:#0f4c81; color:white; }
         table input{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-        .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
-        .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-        .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-        .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-        .hidden{ display:none; }
-        @media(max-width:900px){ .sidebar{ position:relative; width:100%; height:auto; } .main{ margin-left:0; padding:20px; } }
+       .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
+       .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+       .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+       .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+       .hidden{ display:none; }
+        @media(max-width:900px){.sidebar{ position:relative; width:100%; height:auto; }.main{ margin-left:0; padding:20px; } }
     </style>
 </head>
 
@@ -118,6 +118,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // BASE URL GITHUB PAGES KAMU
+    const BASE_URL = 'https://khanzaperdanamandiri.github.io/';
+
     /* =========================
        SISTEM NAVIGASI & AUTH
        ========================= */
@@ -126,7 +129,7 @@
         window.location.href='login.html';
     }
 
-    if(localStorage.getItem('login') !== 'true'){
+    if(localStorage.getItem('login')!== 'true'){
         window.location.href='login.html';
     }
 
@@ -183,29 +186,55 @@
 
     window.buatInvoice = async function(button){
         const row = button.closest('tr');
-        let tanggal = '', noinvoice = '';
+        let tanggal = '', noinvoice = '', perusahaan = '', pekerjaan = '', nilai = '';
 
         if(row.querySelector('.tanggal')){
             tanggal = row.querySelector('.tanggal').value;
             noinvoice = row.querySelector('.noinvoice').value;
+            perusahaan = row.querySelector('.perusahaan').value;
+            pekerjaan = row.querySelector('.pekerjaan').value;
+            nilai = row.querySelector('.nilai').value;
         }else{
             tanggal = row.children[0].innerText;
             noinvoice = row.children[1].innerText;
+            perusahaan = row.children[2].innerText;
+            pekerjaan = row.children[3].innerText;
+            nilai = row.children[4].innerText;
         }
 
         try {
-            // Anti-cache menggunakan timestamp
-            const response = await fetch(`./invoice.xlsx?t=${new Date().getTime()}`);
-            if (!response.ok) throw new Error(`Status: ${response.status}`);
+            // PAKAI URL ABSOLUTE + ANTI CACHE
+            const fileURL = `${BASE_URL}invoice.xlsx?t=${Date.now()}`;
+            const response = await fetch(fileURL, {
+                method: 'GET',
+                cache: 'no-store'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} - File tidak ditemukan di ${fileURL}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                throw new Error('Server mengembalikan halaman HTML, bukan file Excel');
+            }
 
             const arrayBuffer = await response.arrayBuffer();
+            if (arrayBuffer.byteLength < 1000) {
+                throw new Error('File Excel corrupt atau kosong');
+            }
+
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
             const worksheet = workbook.getWorksheet(1);
+            if (!worksheet) throw new Error('Worksheet 1 tidak ada');
 
-            // Isi sel sesuai koordinat template Anda
+            // Isi sel sesuai template
             worksheet.getCell('J7').value = tanggal;
             worksheet.getCell('J8').value = noinvoice;
+            worksheet.getCell('J9').value = perusahaan;
+            worksheet.getCell('J10').value = pekerjaan;
+            worksheet.getCell('J11').value = nilai;
 
             const buffer = await workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -215,8 +244,8 @@
             link.click();
             URL.revokeObjectURL(link.href);
         } catch (error) {
-            console.error(error);
-            alert('File invoice.xlsx gagal dimuat. Pastikan file ada di GitHub dan nama file sudah benar (kecil semua).');
+            console.error('ERROR INVOICE:', error);
+            alert(`Gagal buat invoice: ${error.message}`);
         }
     }
 
@@ -293,32 +322,54 @@
 
     window.buatPenawaran = async function(button){
         const row = button.closest('tr');
-        let tanggal = '', nomor = '', perusahaan = '';
+        let tanggal = '', nomor = '', perusahaan = '', pekerjaan = '', nilai = '';
 
         if(row.querySelector('.tanggal')){
             tanggal = row.querySelector('.tanggal').value;
             nomor = row.querySelector('.nopenawaran').value;
             perusahaan = row.querySelector('.perusahaan').value;
+            pekerjaan = row.querySelector('.pekerjaan').value;
+            nilai = row.querySelector('.nilai').value;
         }else{
             tanggal = row.children[0].innerText;
             nomor = row.children[1].innerText;
             perusahaan = row.children[2].innerText;
+            pekerjaan = row.children[3].innerText;
+            nilai = row.children[4].innerText;
         }
 
         try {
-            // EncodeURIComponent untuk menangani spasi pada "penawaran-harga.xlsx"
-            const fileName = encodeURIComponent('penawaran-harga.xlsx');
-            const response = await fetch(`./${fileName}?t=${new Date().getTime()}`);
-            if (!response.ok) throw new Error(`Status: ${response.status}`);
+            // PAKAI URL ABSOLUTE + ANTI CACHE
+            const fileURL = `${BASE_URL}penawaran-harga.xlsx?t=${Date.now()}`;
+            const response = await fetch(fileURL, {
+                method: 'GET',
+                cache: 'no-store'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} - File tidak ditemukan di ${fileURL}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                throw new Error('Server mengembalikan halaman HTML, bukan file Excel');
+            }
 
             const arrayBuffer = await response.arrayBuffer();
+            if (arrayBuffer.byteLength < 1000) {
+                throw new Error('File Excel corrupt atau kosong');
+            }
+
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
             const worksheet = workbook.getWorksheet(1);
+            if (!worksheet) throw new Error('Worksheet 1 tidak ada');
 
             worksheet.getCell('D7').value = tanggal;
             worksheet.getCell('D10').value = perusahaan;
             worksheet.getCell('J7').value = nomor;
+            worksheet.getCell('D12').value = pekerjaan;
+            worksheet.getCell('J12').value = nilai;
 
             const buffer = await workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -328,8 +379,8 @@
             link.click();
             URL.revokeObjectURL(link.href);
         } catch (error) {
-            console.error(error);
-            alert('File penawaran-harga.xlsx gagal dimuat. Cek penamaan file di GitHub.');
+            console.error('ERROR PENAWARAN:', error);
+            alert(`Gagal buat penawaran: ${error.message}`);
         }
     }
 
