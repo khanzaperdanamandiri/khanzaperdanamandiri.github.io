@@ -461,27 +461,54 @@ noinvoice = row.children[1].innerText;
 
 try{
 
-const response = await fetch('invoice.xlsx');
+const response = await fetch('./invoice.xlsx');
 
 const arrayBuffer = await response.arrayBuffer();
 
-const workbook = XLSX.read(arrayBuffer,{type:'array'});
+const workbook = XLSX.read(arrayBuffer,{
+type:'array',
+cellStyles:true
+});
 
 const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-sheet['J7'] = {
-t:'s',
-v:tanggal
-};
+if(!sheet['J7']) sheet['J7'] = {};
+if(!sheet['J8']) sheet['J8'] = {};
 
-sheet['J8'] = {
-t:'s',
-v:noinvoice
-};
+sheet['J7'].v = tanggal;
+sheet['J7'].t = 's';
 
-XLSX.writeFile(workbook,`${noinvoice}.xlsx`);
+sheet['J8'].v = noinvoice;
+sheet['J8'].t = 's';
+
+const excelBuffer = XLSX.write(workbook,{
+bookType:'xlsx',
+type:'array',
+cellStyles:true
+});
+
+const blob = new Blob(
+[excelBuffer],
+{
+type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}
+);
+
+const link = document.createElement('a');
+
+link.href = URL.createObjectURL(blob);
+
+link.download = `${noinvoice || 'invoice'}.xlsx`;
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
 
 }catch(error){
+
+console.log(error);
 
 alert('invoice.xlsx tidak ditemukan');
 
@@ -638,32 +665,58 @@ perusahaan = row.children[2].innerText;
 
 try{
 
-const response = await fetch('Penawaran harga.xlsx');
+const response = await fetch('./Penawaran harga.xlsx');
 
 const arrayBuffer = await response.arrayBuffer();
 
-const workbook = XLSX.read(arrayBuffer,{type:'array'});
+const workbook = XLSX.read(arrayBuffer,{
+type:'array',
+cellStyles:true
+});
 
 const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-sheet['D7'] = {
-t:'s',
-v:tanggal
-};
+if(!sheet['D7']) sheet['D7'] = {};
+if(!sheet['D10']) sheet['D10'] = {};
+if(!sheet['J7']) sheet['J7'] = {};
 
-sheet['D10'] = {
-t:'s',
-v:perusahaan
-};
+sheet['D7'].v = tanggal;
+sheet['D7'].t = 's';
 
-sheet['J7'] = {
-t:'s',
-v:nomor
-};
+sheet['D10'].v = perusahaan;
+sheet['D10'].t = 's';
 
-XLSX.writeFile(workbook,`${nomor}.xlsx`);
+sheet['J7'].v = nomor;
+sheet['J7'].t = 's';
+
+const excelBuffer = XLSX.write(workbook,{
+bookType:'xlsx',
+type:'array',
+cellStyles:true
+});
+
+const blob = new Blob(
+[excelBuffer],
+{
+type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}
+);
+
+const link = document.createElement('a');
+
+link.href = URL.createObjectURL(blob);
+
+link.download = `${nomor || 'penawaran'}.xlsx`;
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
 
 }catch(error){
+
+console.log(error);
 
 alert('Penawaran harga.xlsx tidak ditemukan');
 
