@@ -46,6 +46,7 @@
       justify-content:space-between;
       align-items:center;
       padding:18px 0;
+      position:relative;
     }
 
     .logo{
@@ -65,6 +66,14 @@
       display:flex;
       list-style:none;
       gap:25px;
+    }
+
+    .menu-toggle{
+      display:none;
+      font-size:32px;
+      cursor:pointer;
+      color:#0f4c81;
+      font-weight:bold;
     }
 
     nav ul li a{
@@ -308,14 +317,37 @@
       box-shadow:0 5px 20px rgba(0,0,0,0.2);
     }
 
+    /* RESPONSIVE MOBILE */
     @media(max-width:768px){
 
       .hero h1{
         font-size:38px;
       }
 
+      .menu-toggle{
+        display:block;
+      }
+
       nav ul{
+        position:absolute;
+        top:80px;
+        left:0;
+        width:100%;
+        background:white;
+        flex-direction:column;
+        padding:20px;
+        gap:15px;
         display:none;
+        box-shadow:0 5px 20px rgba(0,0,0,0.1);
+        border-radius:0 0 15px 15px;
+      }
+
+      nav ul.active{
+        display:flex;
+      }
+
+      .logo{
+        font-size:18px;
       }
 
     }
@@ -347,355 +379,18 @@ CV KHANZA PERDANA MANDIRI
 <li><a href="login.html">Login Admin</a></li>
 </ul>
 
+<!-- MENU TOGGLE -->
+<div class="menu-toggle" onclick="toggleMenu()">
+☰
+</div>
+
 </nav>
 
 </div>
 
 </header>
 
-<section class="hero" id="home">
-
-<div>
-
-<img src="logo.png" alt="Logo">
-
-<h1>Solusi Profesional General Trading & Kontraktor</h1>
-
-<p>
-Bergerak di bidang pengadaan barang, general trading,
-dan jasa kontraktor dengan pelayanan profesional,
-berkualitas, dan terpercaya.
-</p>
-
-<a href="#contact" class="btn btn-primary">
-Hubungi Kami
-</a>
-
-<a href="#services" class="btn btn-outline">
-Layanan Kami
-</a>
-
-</div>
-
-</section>
-
-<section id="about">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Tentang Kami</h2>
-<p>Perusahaan profesional bidang general trading & kontraktor</p>
-</div>
-
-<div class="about">
-
-<img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200&auto=format&fit=crop">
-
-<div>
-
-<h2>CV KHANZA PERDANA MANDIRI</h2>
-
-<p>
-CV KHANZA PERDANA MANDIRI adalah perusahaan yang bergerak
-di bidang pengadaan barang, general trading, dan jasa kontraktor.
-</p>
-
-<br>
-
-<p>
-Kami melayani berbagai kebutuhan proyek dengan mengutamakan
-kualitas pekerjaan, ketepatan waktu, dan kepuasan pelanggan.
-</p>
-
-<br>
-
-<p>
-Dengan tenaga profesional dan pengalaman kerja yang baik,
-kami siap menjadi mitra terpercaya dalam berbagai pekerjaan
-pengadaan maupun konstruksi.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section id="services" style="background:#f4f8fc;">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Layanan Kami</h2>
-<p>Layanan profesional CV KHANZA PERDANA MANDIRI</p>
-</div>
-
-<div class="service-wrapper">
-
-<div class="service-menu">
-
-<button class="service-btn active" onclick="showService('konstruksi', this)">
-General Kontraktor
-</button>
-
-<button class="service-btn" onclick="showService('pengadaan', this)">
-Pengadaan Barang
-</button>
-
-<button class="service-btn" onclick="showService('trading', this)">
-General Trading
-</button>
-
-<button class="service-btn" onclick="showService('mekanikal', this)">
-Mekanikal & Elektrikal
-</button>
-
-<button class="service-btn" onclick="showService('plumbing', this)">
-Plumbing & Sipil
-</button>
-
-</div>
-
-<div class="service-content">
-
-<div id="konstruksi" class="service-box active">
-
-<h2>General Kontraktor</h2>
-
-<p>
-Melayani berbagai pekerjaan konstruksi dan pembangunan secara profesional.
-</p>
-
-<ul>
-<li>Pekerjaan struktur bawah & atas</li>
-<li>Pembangunan gedung</li>
-<li>Pengecatan & finishing</li>
-<li>Pemasangan atap</li>
-<li>Pekerjaan pagar & drainase</li>
-<li>Renovasi bangunan</li>
-<li>Pekerjaan jalan & paving</li>
-</ul>
-
-</div>
-
-<div id="pengadaan" class="service-box">
-
-<h2>Pengadaan Barang</h2>
-
-<p>
-Melayani pengadaan berbagai kebutuhan proyek dan instansi.
-</p>
-
-<ul>
-<li>Material konstruksi</li>
-<li>Alat proyek & teknik</li>
-<li>Peralatan safety / APD</li>
-<li>Material elektrikal</li>
-<li>Peralatan kantor</li>
-<li>Kebutuhan operasional proyek</li>
-<li>Barang umum sesuai permintaan</li>
-</ul>
-
-</div>
-
-<div id="trading" class="service-box">
-
-<h2>General Trading</h2>
-
-<p>
-Melayani perdagangan umum dan distribusi berbagai kebutuhan industri.
-</p>
-
-<ul>
-<li>Distribusi material proyek</li>
-<li>Supplier barang industri</li>
-<li>Kebutuhan operasional perusahaan</li>
-<li>Perdagangan umum</li>
-</ul>
-
-</div>
-
-<div id="mekanikal" class="service-box">
-
-<h2>Mekanikal & Elektrikal</h2>
-
-<p>
-Pekerjaan instalasi sistem mekanikal dan elektrikal untuk bangunan dan industri.
-</p>
-
-<ul>
-<li>Instalasi listrik gedung</li>
-<li>Panel listrik</li>
-<li>Instalasi kabel</li>
-<li>Penerangan</li>
-<li>Grounding system</li>
-<li>Instalasi mesin & mekanikal</li>
-</ul>
-
-</div>
-
-<div id="plumbing" class="service-box">
-
-<h2>Plumbing & Sipil</h2>
-
-<p>
-Pekerjaan plumbing dan sipil untuk kebutuhan gedung dan proyek.
-</p>
-
-<ul>
-<li>Instalasi air bersih</li>
-<li>Instalasi air kotor</li>
-<li>Drainase</li>
-<li>Pipa sanitasi</li>
-<li>Tandon air</li>
-<li>Pekerjaan saluran</li>
-</ul>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section id="portfolio">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Proyek Kami</h2>
-<p>Beberapa dokumentasi pekerjaan dan proyek perusahaan</p>
-</div>
-
-<div class="portfolio-grid">
-
-<div class="portfolio-card">
-
-<img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1200&auto=format&fit=crop">
-
-<div class="portfolio-card-content">
-
-<h3>Pekerjaan Konstruksi</h3>
-
-<p>
-Pelaksanaan pekerjaan konstruksi dan pembangunan profesional.
-</p>
-
-</div>
-
-</div>
-
-<div class="portfolio-card">
-
-<img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop">
-
-<div class="portfolio-card-content">
-
-<h3>Pengadaan Barang</h3>
-
-<p>
-Pengadaan barang kebutuhan proyek dan operasional perusahaan.
-</p>
-
-</div>
-
-</div>
-
-<div class="portfolio-card">
-
-<img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop">
-
-<div class="portfolio-card-content">
-
-<h3>General Trading</h3>
-
-<p>
-Perdagangan umum dan distribusi kebutuhan proyek.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section>
-
-<div class="container">
-
-<div class="cta">
-
-<h2>Siap Bekerja Sama Dengan Kami?</h2>
-
-<br>
-
-<p>
-Hubungi kami sekarang untuk konsultasi dan penawaran terbaik.
-</p>
-
-<br>
-
-<a href="https://wa.me/6287871304043" class="btn btn-primary">
-Chat WhatsApp
-</a>
-
-</div>
-
-</div>
-
-</section>
-
-<section id="contact">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Kontak Kami</h2>
-<p>Silakan hubungi kami untuk informasi lebih lanjut</p>
-</div>
-
-<div class="contact-box">
-
-<h3>CV KHANZA PERDANA MANDIRI</h3>
-
-<br>
-
-<p>
-📍 Kp. Pabrik RT 15/03 Ds. Katulisan,
-Kec. Cikeusal, Kab. Serang - Banten
-</p>
-
-<p>📞 087871304043</p>
-
-<p>✉️ khanzaperdanamandiri@gmail.com</p>
-
-</div>
-
-</div>
-
-</section>
-
-<footer>
-
-<p>
-© 2026 CV KHANZA PERDANA MANDIRI - All Rights Reserved
-</p>
-
-</footer>
-
-<a class="wa-button" href="https://wa.me/6287871304043">
-💬
-</a>
+<!-- KONTEN WEBSITE ANDA LANJUTKAN DI SINI -->
 
 <script>
 
@@ -715,6 +410,15 @@ btn.classList.remove('active');
 document.getElementById(serviceId).classList.add('active');
 
 button.classList.add('active');
+
+}
+
+/* MOBILE MENU */
+function toggleMenu(){
+
+const menu = document.querySelector('nav ul');
+
+menu.classList.toggle('active');
 
 }
 
