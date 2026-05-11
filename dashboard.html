@@ -193,8 +193,8 @@
         
         try {
             const worksheet = await loadExcelFile('invoice.xlsx');
-            worksheet.getCell('J7').value = getValue('.tanggal', 0);
-            worksheet.getCell('J8').value = getValue('.noinvoice', 1);
+            worksheet.getCell('J13').value = getValue('.tanggal', 0);
+            worksheet.getCell('J14').value = getValue('.noinvoice', 1);
             worksheet.getCell('D15').value = getValue('.perusahaan', 2);
 
             const buffer = await worksheet.workbook.xlsx.writeBuffer();
