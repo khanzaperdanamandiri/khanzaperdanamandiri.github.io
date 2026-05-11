@@ -1,787 +1,369 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Menggunakan ExcelJS untuk mempertahankan format template -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:'Poppins',sans-serif;
-background:#eef3f9;
-}
-
-.sidebar{
-width:270px;
-height:100vh;
-position:fixed;
-left:0;
-top:0;
-background:linear-gradient(180deg,#0f4c81,#1f78d1);
-padding:30px 20px;
-color:white;
-overflow:auto;
-}
-
-.sidebar img{
-width:90px;
-display:block;
-margin:auto;
-margin-bottom:20px;
-}
-
-.sidebar h2{
-text-align:center;
-margin-bottom:40px;
-font-size:24px;
-}
-
-.sidebar ul{
-list-style:none;
-}
-
-.sidebar ul li{
-margin-bottom:15px;
-}
-
-.sidebar ul li a{
-text-decoration:none;
-color:white;
-display:block;
-padding:14px 18px;
-border-radius:12px;
-transition:0.3s;
-font-weight:500;
-cursor:pointer;
-}
-
-.sidebar ul li a:hover,
-.sidebar ul li a.active{
-background:rgba(255,255,255,0.15);
-}
-
-.main{
-margin-left:270px;
-padding:35px;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-}
-
-.topbar h1{
-color:#0f4c81;
-font-size:30px;
-}
-
-.logout-btn{
-background:#ff2e2e;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-}
-
-.card{
-background:white;
-padding:30px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
-margin-bottom:30px;
-}
-
-.card h2{
-margin-bottom:20px;
-color:#0f4c81;
-}
-
-.btn-add{
-background:#1f78d1;
-color:white;
-border:none;
-padding:12px 18px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-margin-bottom:20px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-table th,
-table td{
-border:1px solid #ddd;
-padding:12px;
-}
-
-table th{
-background:#0f4c81;
-color:white;
-}
-
-table input{
-width:100%;
-padding:10px;
-border:1px solid #ccc;
-border-radius:8px;
-}
-
-.aksi-wrap{
-display:flex;
-flex-direction:column;
-gap:8px;
-}
-
-.btn-save{
-background:#1f78d1;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.btn-delete{
-background:red;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.btn-create{
-background:green;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.hidden{
-display:none;
-}
-
-@media(max-width:900px){
-
-.sidebar{
-position:relative;
-width:100%;
-height:auto;
-}
-
-.main{
-margin-left:0;
-padding:20px;
-}
-
-}
-
-</style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #eef3f9; }
+        .sidebar { width: 270px; height: 100vh; position: fixed; left: 0; top: 0; background: linear-gradient(180deg, #0f4c81, #1f78d1); padding: 30px 20px; color: white; overflow: auto; }
+        .sidebar img { width: 90px; display: block; margin: auto; margin-bottom: 20px; }
+        .sidebar h2 { text-align: center; margin-bottom: 40px; font-size: 24px; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { margin-bottom: 15px; }
+        .sidebar ul li a { text-decoration: none; color: white; display: block; padding: 14px 18px; border-radius: 12px; transition: 0.3s; font-weight: 500; cursor: pointer; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: rgba(255, 255, 255, 0.15); }
+        .main { margin-left: 270px; padding: 35px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { color: #0f4c81; font-size: 30px; }
+        .logout-btn { background: #ff2e2e; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        .card h2 { margin-bottom: 20px; color: #0f4c81; }
+        .btn-add { background: #1f78d1; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { border: 1px solid #ddd; padding: 12px; }
+        table th { background: #0f4c81; color: white; }
+        table input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+        .aksi-wrap { display: flex; flex-direction: column; gap: 8px; }
+        .btn-save { background: #1f78d1; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .btn-delete { background: red; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .btn-create { background: green; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .hidden { display: none; }
+        @media(max-width: 900px) { .sidebar { position: relative; width: 100%; height: auto; } .main { margin-left: 0; padding: 20px; } }
+    </style>
 </head>
-
 <body>
 
 <div class="sidebar">
-
-<img src="logo.png">
-
-<h2>Dashboard Admin</h2>
-
-<ul>
-<li>
-<a class="active" onclick="showPage('invoicePage',this)">
-🧾 Invoice
-</a>
-</li>
-
-<li>
-<a onclick="showPage('penawaranPage',this)">
-💰 Penawaran Harga
-</a>
-</li>
-</ul>
-
+    <img src="logo.png" alt="Logo">
+    <h2>Dashboard Admin</h2>
+    <ul>
+        <li><a class="active" onclick="showPage('invoicePage', this)">🧾 Invoice</a></li>
+        <li><a onclick="showPage('penawaranPage', this)">💰 Penawaran Harga</a></li>
+    </ul>
 </div>
 
 <div class="main">
+    <div class="topbar">
+        <h1>Dashboard Perusahaan</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
-<div class="topbar">
+    <!-- INVOICE -->
+    <div id="invoicePage">
+        <div class="card">
+            <h2>Data Invoice</h2>
+            <button class="btn-add" onclick="tambahInvoice()">+ Tambah Invoice</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>No Invoice</th>
+                        <th>Perusahaan</th>
+                        <th>Pekerjaan</th>
+                        <th>Nilai</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-<h1>Dashboard Perusahaan</h1>
-
-<button class="logout-btn" onclick="logout()">
-Logout
-</button>
-
-</div>
-
-<!-- INVOICE -->
-<div id="invoicePage">
-
-<div class="card">
-
-<h2>Data Invoice</h2>
-
-<button class="btn-add" onclick="tambahInvoice()">
-+ Tambah Invoice
-</button>
-
-<table>
-
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>No Invoice</th>
-<th>Perusahaan</th>
-<th>Pekerjaan</th>
-<th>Nilai</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-
-<tbody id="invoiceBody"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<!-- PENAWARAN -->
-<div id="penawaranPage" class="hidden">
-
-<div class="card">
-
-<h2>Penawaran Harga</h2>
-
-<button class="btn-add" onclick="tambahPenawaran()">
-+ Tambah Penawaran
-</button>
-
-<table>
-
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>No Penawaran</th>
-<th>Perusahaan</th>
-<th>Pekerjaan</th>
-<th>Nilai</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-
-<tbody id="penawaranBody"></tbody>
-
-</table>
-
-</div>
-
+    <!-- PENAWARAN -->
+    <div id="penawaranPage" class="hidden">
+        <div class="card">
+            <h2>Penawaran Harga</h2>
+            <button class="btn-add" onclick="tambahPenawaran()">+ Tambah Penawaran</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>No Penawaran</th>
+                        <th>Perusahaan</th>
+                        <th>Pekerjaan</th>
+                        <th>Nilai</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="penawaranBody"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-
-apiKey: "AIzaSyADV-EDV5k_C9wyxWX5mFFj4BVqOt5nmgs",
-authDomain: "khanza-dashboard.firebaseapp.com",
-projectId: "khanza-dashboard",
-storageBucket: "khanza-dashboard.firebasestorage.app",
-messagingSenderId: "1078817547940",
-appId: "1:1078817547940:web:218d66f38846596e862831",
-measurementId: "G-YH3MGMZGY4"
-
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-window.logout = function(){
-
-localStorage.removeItem('login');
-
-window.location.href='login.html';
-
-}
-
-if(localStorage.getItem('login') !== 'true'){
-
-window.location.href='login.html';
-
-}
-
-window.showPage = function(pageId,el){
-
-document.getElementById('invoicePage').classList.add('hidden');
-document.getElementById('penawaranPage').classList.add('hidden');
-
-document.getElementById(pageId).classList.remove('hidden');
-
-document.querySelectorAll('.sidebar a').forEach(a=>{
-a.classList.remove('active');
-});
-
-el.classList.add('active');
-
-}
-
-window.hapusBaris = function(button){
-
-button.closest('tr').remove();
-
-}
-
-/* =========================
-INVOICE
-========================= */
-
-window.tambahInvoice = function(){
-
-const tbody = document.getElementById('invoiceBody');
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td><input type="date" class="tanggal"></td>
-<td><input type="text" class="noinvoice"></td>
-<td><input type="text" class="perusahaan"></td>
-<td><input type="text" class="pekerjaan"></td>
-<td><input type="number" class="nilai"></td>
-<td><input type="text" class="keterangan"></td>
-
-<td>
-
-<div class="aksi-wrap">
-
-<button class="btn-save"
-onclick="simpanInvoice(this)">
-Simpan
-</button>
-
-<button class="btn-create"
-onclick="buatInvoice(this)">
-Buat
-</button>
-
-<button class="btn-delete"
-onclick="hapusBaris(this)">
-Hapus
-</button>
-
-</div>
-
-</td>
-`;
-
-tbody.appendChild(row);
-
-}
-
-window.simpanInvoice = async function(button){
-
-const row = button.closest('tr');
-
-const data = {
-
-tanggal: row.querySelector('.tanggal').value,
-noinvoice: row.querySelector('.noinvoice').value,
-perusahaan: row.querySelector('.perusahaan').value,
-pekerjaan: row.querySelector('.pekerjaan').value,
-nilai: row.querySelector('.nilai').value,
-keterangan: row.querySelector('.keterangan').value
-
-};
-
-await addDoc(collection(db,'invoice'),data);
-
-alert('Invoice berhasil disimpan');
-
-loadInvoice();
-
-}
-
-window.buatInvoice = async function(button){
-
-const row = button.closest('tr');
-
-let tanggal = '';
-let noinvoice = '';
-
-if(row.querySelector('.tanggal')){
-
-tanggal = row.querySelector('.tanggal').value;
-noinvoice = row.querySelector('.noinvoice').value;
-
-}else{
-
-tanggal = row.children[0].innerText;
-noinvoice = row.children[1].innerText;
-
-}
-
-try{
-
-const response = await fetch('./invoice.xlsx');
-
-const arrayBuffer = await response.arrayBuffer();
-
-const workbook = XLSX.read(arrayBuffer,{
-type:'array',
-cellStyles:true
-});
-
-const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-if(!sheet['J7']) sheet['J7'] = {};
-if(!sheet['J8']) sheet['J8'] = {};
-
-sheet['J7'].v = tanggal;
-sheet['J7'].t = 's';
-
-sheet['J8'].v = noinvoice;
-sheet['J8'].t = 's';
-
-const excelBuffer = XLSX.write(workbook,{
-bookType:'xlsx',
-type:'array',
-cellStyles:true
-});
-
-const blob = new Blob(
-[excelBuffer],
-{
-type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-}
-);
-
-const link = document.createElement('a');
-
-link.href = URL.createObjectURL(blob);
-
-link.download = `${noinvoice || 'invoice'}.xlsx`;
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
-
-}catch(error){
-
-console.log(error);
-
-alert('invoice.xlsx tidak ditemukan');
-
-}
-
-}
-
-async function loadInvoice(){
-
-const tbody = document.getElementById('invoiceBody');
-
-tbody.innerHTML='';
-
-const querySnapshot = await getDocs(collection(db,'invoice'));
-
-querySnapshot.forEach((docSnap)=>{
-
-const data = docSnap.data();
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-
-<td>${data.tanggal}</td>
-<td>${data.noinvoice}</td>
-<td>${data.perusahaan}</td>
-<td>${data.pekerjaan}</td>
-<td>${data.nilai}</td>
-<td>${data.keterangan}</td>
-
-<td>
-
-<div class="aksi-wrap">
-
-<button class="btn-create"
-onclick="buatInvoice(this)">
-Buat
-</button>
-
-<button class="btn-delete"
-onclick="hapusInvoiceFirebase('${docSnap.id}')">
-Hapus
-</button>
-
-</div>
-
-</td>
-`;
-
-tbody.appendChild(row);
-
-});
-
-}
-
-window.hapusInvoiceFirebase = async function(id){
-
-await deleteDoc(doc(db,'invoice',id));
-
-loadInvoice();
-
-}
-
-/* =========================
-PENAWARAN
-========================= */
-
-window.tambahPenawaran = function(){
-
-const tbody = document.getElementById('penawaranBody');
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td><input type="date" class="tanggal"></td>
-<td><input type="text" class="nopenawaran"></td>
-<td><input type="text" class="perusahaan"></td>
-<td><input type="text" class="pekerjaan"></td>
-<td><input type="number" class="nilai"></td>
-<td><input type="text" class="keterangan"></td>
-
-<td>
-
-<div class="aksi-wrap">
-
-<button class="btn-save"
-onclick="simpanPenawaran(this)">
-Simpan
-</button>
-
-<button class="btn-create"
-onclick="buatPenawaran(this)">
-Buat
-</button>
-
-<button class="btn-delete"
-onclick="hapusBaris(this)">
-Hapus
-</button>
-
-</div>
-
-</td>
-`;
-
-tbody.appendChild(row);
-
-}
-
-window.simpanPenawaran = async function(button){
-
-const row = button.closest('tr');
-
-const data = {
-
-tanggal: row.querySelector('.tanggal').value,
-nomor: row.querySelector('.nopenawaran').value,
-perusahaan: row.querySelector('.perusahaan').value,
-pekerjaan: row.querySelector('.pekerjaan').value,
-nilai: row.querySelector('.nilai').value,
-keterangan: row.querySelector('.keterangan').value
-
-};
-
-await addDoc(collection(db,'penawaran'),data);
-
-alert('Penawaran berhasil disimpan');
-
-loadPenawaran();
-
-}
-
-window.buatPenawaran = async function(button){
-
-const row = button.closest('tr');
-
-let tanggal = '';
-let nomor = '';
-let perusahaan = '';
-
-if(row.querySelector('.tanggal')){
-
-tanggal = row.querySelector('.tanggal').value;
-nomor = row.querySelector('.nopenawaran').value;
-perusahaan = row.querySelector('.perusahaan').value;
-
-}else{
-
-tanggal = row.children[0].innerText;
-nomor = row.children[1].innerText;
-perusahaan = row.children[2].innerText;
-
-}
-
-try{
-
-const response = await fetch('./Penawaran harga.xlsx');
-
-const arrayBuffer = await response.arrayBuffer();
-
-const workbook = XLSX.read(arrayBuffer,{
-type:'array',
-cellStyles:true
-});
-
-const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-if(!sheet['D7']) sheet['D7'] = {};
-if(!sheet['D10']) sheet['D10'] = {};
-if(!sheet['J7']) sheet['J7'] = {};
-
-sheet['D7'].v = tanggal;
-sheet['D7'].t = 's';
-
-sheet['D10'].v = perusahaan;
-sheet['D10'].t = 's';
-
-sheet['J7'].v = nomor;
-sheet['J7'].t = 's';
-
-const excelBuffer = XLSX.write(workbook,{
-bookType:'xlsx',
-type:'array',
-cellStyles:true
-});
-
-const blob = new Blob(
-[excelBuffer],
-{
-type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-}
-);
-
-const link = document.createElement('a');
-
-link.href = URL.createObjectURL(blob);
-
-link.download = `${nomor || 'penawaran'}.xlsx`;
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
-
-}catch(error){
-
-console.log(error);
-
-alert('Penawaran harga.xlsx tidak ditemukan');
-
-}
-
-}
-
-async function loadPenawaran(){
-
-const tbody = document.getElementById('penawaranBody');
-
-tbody.innerHTML='';
-
-const querySnapshot = await getDocs(collection(db,'penawaran'));
-
-querySnapshot.forEach((docSnap)=>{
-
-const data = docSnap.data();
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-
-<td>${data.tanggal}</td>
-<td>${data.nomor}</td>
-<td>${data.perusahaan}</td>
-<td>${data.pekerjaan}</td>
-<td>${data.nilai}</td>
-<td>${data.keterangan}</td>
-
-<td>
-
-<div class="aksi-wrap">
-
-<button class="btn-create"
-onclick="buatPenawaran(this)">
-Buat
-</button>
-
-<button class="btn-delete"
-onclick="hapusPenawaran('${docSnap.id}')">
-Hapus
-</button>
-
-</div>
-
-</td>
-`;
-
-tbody.appendChild(row);
-
-});
-
-}
-
-window.hapusPenawaran = async function(id){
-
-await deleteDoc(doc(db,'penawaran',id));
-
-loadPenawaran();
-
-}
-
-loadInvoice();
-loadPenawaran();
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyADV-EDV5k_C9wyxWX5mFFj4BVqOt5nmgs",
+        authDomain: "khanza-dashboard.firebaseapp.com",
+        projectId: "khanza-dashboard",
+        storageBucket: "khanza-dashboard.firebasestorage.app",
+        messagingSenderId: "1078817547940",
+        appId: "1:1078817547940:web:218d66f38846596e862831",
+        measurementId: "G-YH3MGMZGY4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // AUTH & NAVIGATION
+    window.logout = function() {
+        localStorage.removeItem('login');
+        window.location.href = 'login.html';
+    }
+
+    if (localStorage.getItem('login') !== 'true') {
+        window.location.href = 'login.html';
+    }
+
+    window.showPage = function(pageId, el) {
+        document.getElementById('invoicePage').classList.add('hidden');
+        document.getElementById('penawaranPage').classList.add('hidden');
+        document.getElementById(pageId).classList.remove('hidden');
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    window.hapusBaris = function(button) {
+        button.closest('tr').remove();
+    }
+
+    /* =========================
+       LOGIKA INVOICE
+       ========================= */
+    window.tambahInvoice = function() {
+        const tbody = document.getElementById('invoiceBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="date" class="tanggal"></td>
+            <td><input type="text" class="noinvoice"></td>
+            <td><input type="text" class="perusahaan"></td>
+            <td><input type="text" class="pekerjaan"></td>
+            <td><input type="number" class="nilai"></td>
+            <td><input type="text" class="keterangan"></td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanInvoice(this)">Simpan</button>
+                    <button class="btn-create" onclick="buatInvoice(this)">Buat</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    window.simpanInvoice = async function(button) {
+        const row = button.closest('tr');
+        const data = {
+            tanggal: row.querySelector('.tanggal').value,
+            noinvoice: row.querySelector('.noinvoice').value,
+            perusahaan: row.querySelector('.perusahaan').value,
+            pekerjaan: row.querySelector('.pekerjaan').value,
+            nilai: row.querySelector('.nilai').value,
+            keterangan: row.querySelector('.keterangan').value
+        };
+        await addDoc(collection(db, 'invoice'), data);
+        alert('Invoice berhasil disimpan');
+        loadInvoice();
+    }
+
+    window.buatInvoice = async function(button) {
+        const row = button.closest('tr');
+        let tanggal = '', noinvoice = '';
+
+        if (row.querySelector('.tanggal')) {
+            tanggal = row.querySelector('.tanggal').value;
+            noinvoice = row.querySelector('.noinvoice').value;
+        } else {
+            tanggal = row.children[0].innerText;
+            noinvoice = row.children[1].innerText;
+        }
+
+        try {
+            const response = await fetch('./invoice.xlsx');
+            if (!response.ok) throw new Error('File template tidak ditemukan');
+            
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(arrayBuffer);
+            const worksheet = workbook.getWorksheet(1);
+
+            // Mengisi data ke sel J7 dan J8
+            worksheet.getCell('J7').value = tanggal;
+            worksheet.getCell('J8').value = noinvoice;
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${noinvoice || 'invoice'}.xlsx`;
+            link.click();
+        } catch (error) {
+            console.error(error);
+            alert('Error: invoice.xlsx tidak ditemukan atau rusak.');
+        }
+    }
+
+    async function loadInvoice() {
+        const tbody = document.getElementById('invoiceBody');
+        tbody.innerHTML = '';
+        const querySnapshot = await getDocs(collection(db, 'invoice'));
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.tanggal}</td>
+                <td>${data.noinvoice}</td>
+                <td>${data.perusahaan}</td>
+                <td>${data.pekerjaan}</td>
+                <td>${data.nilai}</td>
+                <td>${data.keterangan}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-create" onclick="buatInvoice(this)">Buat</button>
+                        <button class="btn-delete" onclick="hapusInvoiceFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    window.hapusInvoiceFirebase = async function(id) {
+        if(confirm('Hapus data ini?')) {
+            await deleteDoc(doc(db, 'invoice', id));
+            loadInvoice();
+        }
+    }
+
+    /* =========================
+       LOGIKA PENAWARAN
+       ========================= */
+    window.tambahPenawaran = function() {
+        const tbody = document.getElementById('penawaranBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="date" class="tanggal"></td>
+            <td><input type="text" class="nopenawaran"></td>
+            <td><input type="text" class="perusahaan"></td>
+            <td><input type="text" class="pekerjaan"></td>
+            <td><input type="number" class="nilai"></td>
+            <td><input type="text" class="keterangan"></td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanPenawaran(this)">Simpan</button>
+                    <button class="btn-create" onclick="buatPenawaran(this)">Buat</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    window.simpanPenawaran = async function(button) {
+        const row = button.closest('tr');
+        const data = {
+            tanggal: row.querySelector('.tanggal').value,
+            nomor: row.querySelector('.nopenawaran').value,
+            perusahaan: row.querySelector('.perusahaan').value,
+            pekerjaan: row.querySelector('.pekerjaan').value,
+            nilai: row.querySelector('.nilai').value,
+            keterangan: row.querySelector('.keterangan').value
+        };
+        await addDoc(collection(db, 'penawaran'), data);
+        alert('Penawaran berhasil disimpan');
+        loadPenawaran();
+    }
+
+    window.buatPenawaran = async function(button) {
+        const row = button.closest('tr');
+        let tanggal = '', nomor = '', perusahaan = '';
+
+        if (row.querySelector('.tanggal')) {
+            tanggal = row.querySelector('.tanggal').value;
+            nomor = row.querySelector('.nopenawaran').value;
+            perusahaan = row.querySelector('.perusahaan').value;
+        } else {
+            tanggal = row.children[0].innerText;
+            nomor = row.children[1].innerText;
+            perusahaan = row.children[2].innerText;
+        }
+
+        try {
+            const response = await fetch('./Penawaran harga.xlsx');
+            if (!response.ok) throw new Error('File template tidak ditemukan');
+
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(arrayBuffer);
+            const worksheet = workbook.getWorksheet(1);
+
+            // Mengisi data sesuai koordinat Anda
+            worksheet.getCell('D7').value = tanggal;
+            worksheet.getCell('D10').value = perusahaan;
+            worksheet.getCell('J7').value = nomor;
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${nomor || 'penawaran'}.xlsx`;
+            link.click();
+        } catch (error) {
+            console.error(error);
+            alert('Error: Penawaran harga.xlsx tidak ditemukan atau rusak.');
+        }
+    }
+
+    async function loadPenawaran() {
+        const tbody = document.getElementById('penawaranBody');
+        tbody.innerHTML = '';
+        const querySnapshot = await getDocs(collection(db, 'penawaran'));
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.tanggal}</td>
+                <td>${data.nomor}</td>
+                <td>${data.perusahaan}</td>
+                <td>${data.pekerjaan}</td>
+                <td>${data.nilai}</td>
+                <td>${data.keterangan}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-create" onclick="buatPenawaran(this)">Buat</button>
+                        <button class="btn-delete" onclick="hapusPenawaranFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    window.hapusPenawaranFirebase = async function(id) {
+        if(confirm('Hapus data ini?')) {
+            await deleteDoc(doc(db, 'penawaran', id));
+            loadPenawaran();
+        }
+    }
+
+    // Inisialisasi data
+    loadInvoice();
+    loadPenawaran();
 
 </script>
 
