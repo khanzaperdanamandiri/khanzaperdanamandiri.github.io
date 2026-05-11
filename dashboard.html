@@ -195,9 +195,7 @@
             const worksheet = await loadExcelFile('invoice.xlsx');
             worksheet.getCell('J7').value = getValue('.tanggal', 0);
             worksheet.getCell('J8').value = getValue('.noinvoice', 1);
-            worksheet.getCell('J9').value = getValue('.perusahaan', 2);
-            worksheet.getCell('J10').value = getValue('.pekerjaan', 3);
-            worksheet.getCell('J11').value = getValue('.nilai', 4);
+            worksheet.getCell('D15').value = getValue('.perusahaan', 2);
 
             const buffer = await worksheet.workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -289,8 +287,6 @@
             worksheet.getCell('D7').value = getValue('.tanggal', 0);
             worksheet.getCell('D10').value = getValue('.perusahaan', 2);
             worksheet.getCell('J7').value = getValue('.nopenawaran', 1);
-            worksheet.getCell('D12').value = getValue('.pekerjaan', 3);
-            worksheet.getCell('J12').value = getValue('.nilai', 4);
 
             const buffer = await worksheet.workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
