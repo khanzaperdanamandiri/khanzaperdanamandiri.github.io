@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<body>
+
+<div class="login-box">
+
+  <img src="logo.png" alt="Logo">
+
+  <h2>Admin Login</h2>
+
+  <p>
+    CV KHANZA PERDANA MANDIRI
+  </p>
+
+  <div class="input-group">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Masukkan email">
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Masukkan password">
+  </div>
+
+  <button class="login-btn" onclick="login()">
+    Login
+  </button>
+
+  <div class="error" id="error"></div>
+
+</div>
+
+<script>
+
+function login(){
+
+const email = document.getElementById('email').value;
+const password = document.getElementById('password').value;
+
+if(email === 'admin@khanza.com' && password === '123456'){
+
+localStorage.setItem('login','true');
+
+window.location.href = 'dashboard.html';
+
+}else{
+
+document.getElementById('error').innerHTML = 'Email atau password salah';
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
