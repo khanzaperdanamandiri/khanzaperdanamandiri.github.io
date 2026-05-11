@@ -7,7 +7,11 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- LIBRARY EXCEL -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 
@@ -174,6 +178,7 @@ border-radius:12px;
 cursor:pointer;
 font-weight:600;
 font-size:15px;
+margin-right:10px;
 }
 
 .report-item{
@@ -187,6 +192,23 @@ border-left:5px solid #0f4c81;
 .report-item h3{
 color:#0f4c81;
 margin-bottom:10px;
+}
+
+table{
+border-collapse:collapse;
+background:white;
+}
+
+table th{
+background:#0f4c81;
+color:white;
+}
+
+table th,
+table td{
+padding:12px;
+border:1px solid #ddd;
+text-align:left;
 }
 
 @media(max-width:900px){
@@ -210,6 +232,7 @@ grid-template-columns:1fr;
 
 </style>
 </head>
+
 <body>
 
 <div class="sidebar">
@@ -222,8 +245,7 @@ grid-template-columns:1fr;
 <li><a href="#laporan">📋 Input Laporan</a></li>
 <li><a href="#invoice">🧾 Invoice</a></li>
 <li><a href="#penawaran">💰 Penawaran Harga</a></li>
-<li><a href="#proyek">🏗️ Data Proyek</a></li>
-<li><a href="#pengadaan">📦 Pengadaan Barang</a></li>
+<li><a href="#excel">📊 Data Excel</a></li>
 </ul>
 
 </div>
@@ -259,6 +281,7 @@ grid-template-columns:1fr;
 
 </div>
 
+<!-- INPUT LAPORAN -->
 <div class="card" id="laporan">
 
 <h2>Input Laporan Proyek</h2>
@@ -272,6 +295,7 @@ grid-template-columns:1fr;
 
 <div class="form-group">
 <label>Kategori</label>
+
 <select id="category">
 <option>Pekerjaan Konstruksi</option>
 <option>Pengadaan Barang</option>
@@ -279,6 +303,7 @@ grid-template-columns:1fr;
 <option>Mekanikal & Elektrikal</option>
 <option>Plumbing & Sipil</option>
 </select>
+
 </div>
 
 </div>
@@ -301,6 +326,7 @@ Simpan Laporan
 
 </div>
 
+<!-- INVOICE -->
 <div class="card" id="invoice">
 
 <h2>Pembuatan Invoice</h2>
@@ -344,6 +370,7 @@ Buat Invoice
 
 </div>
 
+<!-- PENAWARAN -->
 <div class="card" id="penawaran">
 
 <h2>Pembuatan Penawaran Harga</h2>
@@ -378,6 +405,57 @@ Simpan Penawaran
 
 </div>
 
+<!-- DATA EXCEL -->
+<div class="card" id="excel">
+
+<h2>Data Excel Proyek</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Nama Pekerjaan</label>
+<input type="text" id="excelNama">
+</div>
+
+<div class="form-group">
+<label>Qty</label>
+<input type="number" id="excelQty">
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Keterangan</label>
+<textarea rows="4" id="excelKet"></textarea>
+</div>
+
+<button class="submit-btn" onclick="tambahExcel()">
+Tambah Data
+</button>
+
+<button class="submit-btn" onclick="downloadExcel()">
+Download Excel
+</button>
+
+<br><br>
+
+<div style="overflow:auto;">
+
+<table width="100%" id="excelTable">
+
+<tr>
+<th>No</th>
+<th>Nama Pekerjaan</th>
+<th>Qty</th>
+<th>Keterangan</th>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
@@ -391,6 +469,7 @@ localStorage.removeItem('login');
 window.location.href = 'login.html';
 }
 
+/* SIMPAN LAPORAN */
 function saveReport(){
 
 const project = document.getElementById('project').value;
@@ -401,6 +480,7 @@ const report = document.getElementById('report').value;
 const reportBox = document.getElementById('reportBox');
 
 const item = document.createElement('div');
+
 item.classList.add('report-item');
 
 item.innerHTML = `
@@ -413,6 +493,49 @@ item.innerHTML = `
 reportBox.prepend(item);
 
 alert('Laporan berhasil disimpan');
+
+}
+
+/* DATA EXCEL */
+let noExcel = 1;
+
+function tambahExcel(){
+
+const nama = document.getElementById('excelNama').value;
+const qty = document.getElementById('excelQty').value;
+const ket = document.getElementById('excelKet').value;
+
+if(nama === '' || qty === ''){
+alert('Lengkapi data terlebih dahulu');
+return;
+}
+
+const table = document.getElementById('excelTable');
+
+const row = table.insertRow();
+
+row.innerHTML = `
+<td>${noExcel++}</td>
+<td>${nama}</td>
+<td>${qty}</td>
+<td>${ket}</td>
+`;
+
+document.getElementById('excelNama').value = '';
+document.getElementById('excelQty').value = '';
+document.getElementById('excelKet').value = '';
+
+alert('Data berhasil ditambahkan');
+
+}
+
+function downloadExcel(){
+
+const table = document.getElementById("excelTable");
+
+const wb = XLSX.utils.table_to_book(table);
+
+XLSX.writeFile(wb, "data-proyek.xlsx");
 
 }
 
