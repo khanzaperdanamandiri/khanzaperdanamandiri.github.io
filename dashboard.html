@@ -1,71 +1,61 @@
 <!DOCTYPE html>
-<label>Kategori</label>
-<select id="category">
-<option>Pekerjaan Konstruksi</option>
-<option>Pengadaan Barang</option>
-<option>General Trading</option>
-<option>Mekanikal & Elektrikal</option>
-<option>Plumbing & Sipil</option>
-</select>
-</div>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin</title>
 
-<div class="form-group">
-<label>Tanggal</label>
-<input type="date" id="date">
-</div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<div class="form-group">
-<label>Laporan / Progress</label>
-<textarea rows="6" id="report"></textarea>
-</div>
+<style>
 
-<button class="submit-btn" onclick="saveReport()">
-Simpan Laporan
-</button>
-
-</div>
-
-<div class="report-box" id="reportBox"></div>
-
-</div>
-
-<script>
-
-if(localStorage.getItem('login') !== 'true'){
-window.location.href = 'login.html';
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-function logout(){
-localStorage.removeItem('login');
-window.location.href = 'login.html';
+body{
+font-family:'Poppins',sans-serif;
+background:#f4f8fc;
 }
 
-function saveReport(){
-
-const project = document.getElementById('project').value;
-const category = document.getElementById('category').value;
-const date = document.getElementById('date').value;
-const report = document.getElementById('report').value;
-
-const reportBox = document.getElementById('reportBox');
-
-const item = document.createElement('div');
-item.classList.add('report-item');
-
-item.innerHTML = `
-<h3>${project}</h3>
-<p><b>Kategori:</b> ${category}</p>
-<p><b>Tanggal:</b> ${date}</p>
-<p>${report}</p>
-`;
-
-reportBox.prepend(item);
-
-alert('Laporan berhasil disimpan');
-
+.sidebar{
+width:280px;
+height:100vh;
+position:fixed;
+left:0;
+top:0;
+background:linear-gradient(180deg,#0f4c81,#1f78d1);
+color:white;
+padding:30px 20px;
+overflow:auto;
 }
 
-</script>
+.sidebar img{
+width:90px;
+display:block;
+margin:auto;
+margin-bottom:20px;
+}
 
-</body>
+.sidebar h2{
+text-align:center;
+margin-bottom:40px;
+font-size:22px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin-bottom:15px;
+}
+
+.sidebar ul li a{
+text-decoration:none;
+color:white;
 </html>
