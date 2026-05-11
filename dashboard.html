@@ -13,29 +13,29 @@
     <style>
         *{ margin:0; padding:0; box-sizing:border-box; }
         body{ font-family:'Poppins',sans-serif; background:#eef3f9; }
-      .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; }
-      .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
-      .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
-      .sidebar ul{ list-style:none; }
-      .sidebar ul li{ margin-bottom:15px; }
-      .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
-      .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
-      .main{ margin-left:270px; padding:35px; }
-      .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-      .topbar h1{ color:#0f4c81; font-size:30px; }
-      .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
-      .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
-      .card h2{ margin-bottom:20px; color:#0f4c81; }
-      .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
+     .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; }
+     .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
+     .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
+     .sidebar ul{ list-style:none; }
+     .sidebar ul li{ margin-bottom:15px; }
+     .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
+     .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
+     .main{ margin-left:270px; padding:35px; }
+     .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+     .topbar h1{ color:#0f4c81; font-size:30px; }
+     .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
+     .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
+     .card h2{ margin-bottom:20px; color:#0f4c81; }
+     .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
         table{ width:100%; border-collapse:collapse; }
         table th, table td{ border:1px solid #ddd; padding:12px; }
         table th{ background:#0f4c81; color:white; }
         table input{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-      .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
-      .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-      .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-      .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-      .hidden{ display:none; }
+     .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
+     .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+     .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+     .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+     .hidden{ display:none; }
         @media(max-width:900px){.sidebar{ position:relative; width:100%; height:auto; }.main{ margin-left:0; padding:20px; } }
     </style>
 </head>
@@ -193,6 +193,8 @@
         
         try {
             const worksheet = await loadExcelFile('invoice.xlsx');
+            
+            // INVOICE: J13=tanggal, J14=noinvoice, D15=perusahaan
             worksheet.getCell('J13').value = getValue('.tanggal', 0);
             worksheet.getCell('J14').value = getValue('.noinvoice', 1);
             worksheet.getCell('D15').value = getValue('.perusahaan', 2);
@@ -206,7 +208,7 @@
             URL.revokeObjectURL(link.href);
         } catch (error) {
             console.error('ERROR INVOICE:', error);
-            alert(`Gagal: ${error.message}\n\nCoba hapus & upload ulang file invoice.xlsx di GitHub.`);
+            alert(`Gagal: ${error.message}`);
         }
     }
 
@@ -284,6 +286,8 @@
         
         try {
             const worksheet = await loadExcelFile('penawaran-harga.xlsx');
+            
+            // PENAWARAN: D7=tanggal, D10=perusahaan, J7=nopenawaran
             worksheet.getCell('D7').value = getValue('.tanggal', 0);
             worksheet.getCell('D10').value = getValue('.perusahaan', 2);
             worksheet.getCell('J7').value = getValue('.nopenawaran', 1);
@@ -297,7 +301,7 @@
             URL.revokeObjectURL(link.href);
         } catch (error) {
             console.error('ERROR PENAWARAN:', error);
-            alert(`Gagal: ${error.message}\n\nCoba hapus & upload ulang file penawaran-harga.xlsx di GitHub.`);
+            alert(`Gagal: ${error.message}`);
         }
     }
 
