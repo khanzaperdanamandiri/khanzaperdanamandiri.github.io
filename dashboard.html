@@ -306,8 +306,8 @@
         }
 
         try {
-            // EncodeURIComponent untuk menangani spasi pada "Penawaran harga.xlsx"
-            const fileName = encodeURIComponent('Penawaran harga.xlsx');
+            // EncodeURIComponent untuk menangani spasi pada "penawaran-harga.xlsx"
+            const fileName = encodeURIComponent('penawaran-harga.xlsx');
             const response = await fetch(`./${fileName}?t=${new Date().getTime()}`);
             if (!response.ok) throw new Error(`Status: ${response.status}`);
 
@@ -329,7 +329,7 @@
             URL.revokeObjectURL(link.href);
         } catch (error) {
             console.error(error);
-            alert('File Penawaran harga.xlsx gagal dimuat. Cek penamaan file di GitHub.');
+            alert('File penawaran-harga.xlsx gagal dimuat. Cek penamaan file di GitHub.');
         }
     }
 
