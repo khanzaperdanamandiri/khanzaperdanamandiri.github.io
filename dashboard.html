@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Dashboard Admin</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -211,6 +213,34 @@ border:1px solid #ddd;
 text-align:left;
 }
 
+#invoiceTable input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.btn-hapus{
+background:red;
+color:white;
+border:none;
+padding:10px 14px;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:5px;
+width:100%;
+}
+
+.btn-buat{
+background:green;
+color:white;
+border:none;
+padding:10px 14px;
+border-radius:8px;
+cursor:pointer;
+width:100%;
+}
+
 @media(max-width:900px){
 
 .sidebar{
@@ -231,6 +261,7 @@ grid-template-columns:1fr;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -253,8 +284,13 @@ grid-template-columns:1fr;
 <div class="main">
 
 <div class="topbar">
+
 <h1>Dashboard Perusahaan</h1>
-<button class="logout-btn" onclick="logout()">Logout</button>
+
+<button class="logout-btn" onclick="logout()">
+Logout
+</button>
+
 </div>
 
 <div class="stats-grid">
@@ -294,6 +330,7 @@ grid-template-columns:1fr;
 </div>
 
 <div class="form-group">
+
 <label>Kategori</label>
 
 <select id="category">
@@ -329,44 +366,32 @@ Simpan Laporan
 <!-- INVOICE -->
 <div class="card" id="invoice">
 
-<h2>Pembuatan Invoice</h2>
+<h2>Data Invoice</h2>
 
-<div class="form-grid">
-
-<div class="form-group">
-<label>Nomor Invoice</label>
-<input type="text" placeholder="INV-001">
-</div>
-
-<div class="form-group">
-<label>Nama Client</label>
-<input type="text">
-</div>
-
-</div>
-
-<div class="form-group">
-<label>Deskripsi Pekerjaan</label>
-<textarea rows="4"></textarea>
-</div>
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Total Tagihan</label>
-<input type="text">
-</div>
-
-<div class="form-group">
-<label>Tanggal Invoice</label>
-<input type="date">
-</div>
-
-</div>
-
-<button class="submit-btn">
-Buat Invoice
+<button class="submit-btn" onclick="tambahInvoice()">
++ Tambah Invoice
 </button>
+
+<br><br>
+
+<div style="overflow:auto;">
+
+<table width="100%" id="invoiceTable">
+
+<tr>
+<th>No</th>
+<th>Tanggal</th>
+<th>No Invoice</th>
+<th>Perusahaan</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+
+</table>
+
+</div>
 
 </div>
 
@@ -536,6 +561,121 @@ const table = document.getElementById("excelTable");
 const wb = XLSX.utils.table_to_book(table);
 
 XLSX.writeFile(wb, "data-proyek.xlsx");
+
+}
+
+/* =========================
+   INVOICE DINAMIS
+========================= */
+
+let invoiceNo = 1;
+
+function tambahInvoice(){
+
+const table = document.getElementById('invoiceTable');
+
+const row = table.insertRow();
+
+row.innerHTML = `
+
+<td>${invoiceNo++}</td>
+
+<td>
+<input type="date" class="tanggal">
+</td>
+
+<td>
+<input type="text" class="noinvoice" placeholder="INV-001">
+</td>
+
+<td>
+<input type="text" class="perusahaan" placeholder="Nama Perusahaan">
+</td>
+
+<td>
+<input type="text" class="pekerjaan" placeholder="Nama Pekerjaan">
+</td>
+
+<td>
+<input type="number" class="nilai" placeholder="0">
+</td>
+
+<td>
+<input type="text" class="keterangan" placeholder="Keterangan">
+</td>
+
+<td>
+
+<button class="btn-hapus" onclick="hapusInvoice(this)">
+Hapus
+</button>
+
+<button class="btn-buat" onclick="buatInvoice(this)">
+Buat
+</button>
+
+</td>
+
+`;
+
+}
+
+/* HAPUS ROW */
+function hapusInvoice(button){
+
+const row = button.parentElement.parentElement;
+
+row.remove();
+
+}
+
+/* BUAT FILE EXCEL */
+async function buatInvoice(button){
+
+const row = button.parentElement.parentElement;
+
+const tanggal = row.querySelector('.tanggal').value;
+const noinvoice = row.querySelector('.noinvoice').value;
+const perusahaan = row.querySelector('.perusahaan').value;
+const pekerjaan = row.querySelector('.pekerjaan').value;
+const nilai = row.querySelector('.nilai').value;
+const keterangan = row.querySelector('.keterangan').value;
+
+if(
+tanggal === '' ||
+noinvoice === '' ||
+perusahaan === ''
+){
+alert('Lengkapi data invoice');
+return;
+}
+
+try{
+
+const response = await fetch('invoice.xlsx');
+
+const arrayBuffer = await response.arrayBuffer();
+
+const workbook = XLSX.read(arrayBuffer, {type:'array'});
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+sheet['D17'] = { t:'s', v: perusahaan };
+sheet['J14'] = { t:'s', v: tanggal };
+sheet['J15'] = { t:'s', v: noinvoice };
+sheet['D19'] = { t:'s', v: pekerjaan };
+sheet['J27'] = { t:'n', v: Number(nilai) };
+sheet['D29'] = { t:'s', v: keterangan };
+
+XLSX.writeFile(workbook, `${noinvoice}.xlsx`);
+
+alert('Invoice berhasil dibuat');
+
+}catch(error){
+
+alert('Template invoice.xlsx tidak ditemukan');
+
+}
 
 }
 
