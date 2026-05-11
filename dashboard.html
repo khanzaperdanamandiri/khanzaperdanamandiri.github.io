@@ -9,10 +9,525 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-<!-- FIREBASE -->
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:#eef3f9;
+}
+
+.sidebar{
+width:270px;
+height:100vh;
+position:fixed;
+left:0;
+top:0;
+background:linear-gradient(180deg,#0f4c81,#1f78d1);
+padding:30px 20px;
+color:white;
+overflow:auto;
+}
+
+.sidebar img{
+width:90px;
+display:block;
+margin:auto;
+margin-bottom:20px;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:40px;
+font-size:24px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin-bottom:15px;
+}
+
+.sidebar ul li a{
+text-decoration:none;
+color:white;
+display:block;
+padding:14px 18px;
+border-radius:12px;
+transition:0.3s;
+font-weight:500;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:rgba(255,255,255,0.15);
+}
+
+.main{
+margin-left:270px;
+padding:35px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.topbar h1{
+color:#0f4c81;
+font-size:30px;
+}
+
+.logout-btn{
+background:#ff2e2e;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+.card h2{
+margin-bottom:20px;
+color:#0f4c81;
+}
+
+.btn-add{
+background:#1f78d1;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+margin-bottom:20px;
+}
+
+.table-wrap{
+overflow:auto;
+}
+
+.table-keuangan{
+width:100%;
+border-collapse:collapse;
+min-width:1000px;
+}
+
+.table-keuangan td,
+.table-keuangan th{
+border:1px solid #d6dce5;
+padding:12px;
+font-size:14px;
+}
+
+.table-keuangan th{
+background:#0f4c81;
+color:white;
+text-align:left;
+}
+
+.table-keuangan input{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:8px;
+font-family:'Poppins',sans-serif;
+}
+
+.section-title{
+background:#0f4c81;
+color:white;
+font-weight:600;
+}
+
+.green{
+background:#dff5df;
+}
+
+.red{
+background:#ffdede;
+}
+
+.orange{
+background:#fff0d9;
+}
+
+.blue{
+background:#dcecff;
+}
+
+.action-btn{
+background:#1f78d1;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+margin-top:20px;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.tab-btn{
+padding:12px 20px;
+border:none;
+border-radius:12px;
+background:#dce7f5;
+font-weight:600;
+cursor:pointer;
+color:#0f4c81;
+}
+
+.tab-btn.active{
+background:#0f4c81;
+color:white;
+}
+
+.tab-content{
+display:none;
+}
+
+.tab-content.active{
+display:block;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th,
+table td{
+border:1px solid #ddd;
+padding:12px;
+}
+
+table th{
+background:#0f4c81;
+color:white;
+}
+
+table input{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.aksi-wrap{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.btn-save{
+background:#1f78d1;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn-delete{
+background:red;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn-create{
+background:green;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.hidden{
+display:none;
+}
+
+@media(max-width:900px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+
+<img src="logo.png" alt="Logo">
+
+<h2>Dashboard Admin</h2>
+
+<ul>
+<li><a href="#" class="active" onclick="showPage('keuanganPage',this)">📊 Laporan Keuangan</a></li>
+<li><a href="#" onclick="showPage('invoicePage',this)">🧾 Invoice</a></li>
+<li><a href="#" onclick="showPage('penawaranPage',this)">💰 Penawaran Harga</a></li>
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+<h1>Dashboard Perusahaan</h1>
+<button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<!-- HALAMAN LAPORAN KEUANGAN -->
+<div id="keuanganPage">
+
+<div class="card">
+<h2>Laporan Keuangan</h2>
+
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab('rekapan',this)">Rekapan</button>
+<button class="tab-btn" onclick="openTab('aruskas',this)">Arus Kas</button>
+<button class="tab-btn" onclick="openTab('pemborong',this)">Opnaman Pemborong</button>
+<button class="tab-btn" onclick="openTab('khanza',this)">Opnaman Khanza</button>
+</div>
+
+<!-- REKAPAN -->
+<div class="tab-content active" id="rekapan">
+
+<div class="table-wrap">
+<table class="table-keuangan">
+<tbody>
+<tr>
+<th colspan="4">REKAPAN KEUANGAN</th>
+</tr>
+
+<tr class="blue">
+<td>NILAI</td>
+<td><input type="number" id="nilai"></td>
+<td>PPH</td>
+<td><input type="number" id="pph"></td>
+</tr>
+
+<tr class="blue">
+<td>RETENSI</td>
+<td><input type="number" id="retensi"></td>
+<td>SISA</td>
+<td><input type="number" id="sisa"></td>
+</tr>
+
+<tr class="green">
+<td>BIAYA PEMBORONG</td>
+<td><input type="number" id="biayaPemborong"></td>
+<td>TERBAYAR</td>
+<td><input type="number" id="terbayar"></td>
+</tr>
+
+<tr class="green">
+<td>SISA PEMBAYARAN PEMBORONG</td>
+<td><input type="number" id="sisaPembayaran"></td>
+<td>PENGELUARAN</td>
+<td><input type="number" id="pengeluaran"></td>
+</tr>
+
+<tr class="orange">
+<td>BOP</td>
+<td><input type="number" id="bop"></td>
+<td>ALAT</td>
+<td><input type="number" id="alat"></td>
+</tr>
+
+<tr class="orange">
+<td>KOORDINASI</td>
+<td><input type="number" id="koordinasi"></td>
+<td>KONTRAKAN</td>
+<td><input type="number" id="kontrakan"></td>
+</tr>
+
+<tr class="red">
+<td>MODAL VICTOR</td>
+<td><input type="number" id="victor"></td>
+<td>KASBON</td>
+<td><input type="number" id="kasbon"></td>
+</tr>
+
+<tr class="red">
+<td>FEE VICTOR 5%</td>
+<td><input type="number" id="feeVictor"></td>
+<td>SISA BERSIH</td>
+<td><input type="number" id="sisaBersih"></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<button class="action-btn" onclick="saveRekapan()">Simpan Rekapan</button>
+
+</div>
+
+<!-- ARUS KAS -->
+<div class="tab-content" id="aruskas">
+
+<button class="btn-add" onclick="tambahArusKas()">+ Tambah Data</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Uraian</th>
+<th>Masuk</th>
+<th>Keluar</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="arusKasBody"></tbody>
+</table>
+</div>
+
+</div>
+
+<!-- OPNAMAN PEMBORONG -->
+<div class="tab-content" id="pemborong">
+
+<button class="btn-add" onclick="tambahPemborong()">+ Tambah Data</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="pemborongBody"></tbody>
+</table>
+</div>
+
+</div>
+
+<!-- OPNAMAN KHANZA -->
+<div class="tab-content" id="khanza">
+
+<button class="btn-add" onclick="tambahKhanza()">+ Tambah Data</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="khanzaBody"></tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- HALAMAN INVOICE -->
+<div id="invoicePage" class="hidden">
+
+<div class="card">
+<h2>Data Invoice</h2>
+
+<button class="btn-add" onclick="tambahInvoice()">+ Tambah Invoice</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>No Invoice</th>
+<th>Perusahaan</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="invoiceBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- HALAMAN PENAWARAN -->
+<div id="penawaranPage" class="hidden">
+
+<div class="card">
+<h2>Penawaran Harga</h2>
+
+<button class="btn-add" onclick="tambahPenawaran()">+ Tambah Penawaran</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>No Penawaran</th>
+<th>Perusahaan</th>
+<th>Pekerjaan</th>
+<th>Nilai</th>
+<th>Keterangan</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="penawaranBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -23,7 +538,8 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc
+doc,
+setDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -49,236 +565,87 @@ if(localStorage.getItem('login') !== 'true'){
 window.location.href='login.html';
 }
 
+window.showPage = function(pageId,el){
+
+document.getElementById('keuanganPage').classList.add('hidden');
+document.getElementById('invoicePage').classList.add('hidden');
+document.getElementById('penawaranPage').classList.add('hidden');
+
+document.getElementById(pageId).classList.remove('hidden');
+
+document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));
+el.classList.add('active');
+}
+
+window.openTab = function(tabId,el){
+
+document.querySelectorAll('.tab-content').forEach(tab=>{
+tab.classList.remove('active');
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+btn.classList.remove('active');
+});
+
+document.getElementById(tabId).classList.add('active');
+el.classList.add('active');
+}
+
 /* =========================
-INVOICE
+REKAPAN
 ========================= */
 
-window.tambahInvoice = function(){
-
-const tbody = document.getElementById('invoiceBody');
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td><input type="date" class="tanggal"></td>
-<td><input type="text" class="noinvoice"></td>
-<td><input type="text" class="perusahaan"></td>
-<td><input type="text" class="pekerjaan"></td>
-<td><input type="number" class="nilai"></td>
-<td><input type="text" class="keterangan"></td>
-<td>
-<div class="aksi-wrap">
-<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
-<button class="btn-save" onclick="simpanInvoice(this)">Simpan</button>
-<button class="btn-create" onclick="buatInvoice(this)">Buat</button>
-</div>
-</td>
-`;
-
-tbody.appendChild(row);
-}
-
-window.hapusBaris = function(button){
-button.closest('tr').remove();
-}
-
-window.simpanInvoice = async function(button){
-
-const row = button.closest('tr');
+window.saveRekapan = async function(){
 
 const data = {
-
-tanggal: row.querySelector('.tanggal').value,
-noinvoice: row.querySelector('.noinvoice').value,
-perusahaan: row.querySelector('.perusahaan').value,
-pekerjaan: row.querySelector('.pekerjaan').value,
-nilai: row.querySelector('.nilai').value,
-keterangan: row.querySelector('.keterangan').value
-
+nilai: document.getElementById('nilai').value,
+pph: document.getElementById('pph').value,
+retensi: document.getElementById('retensi').value,
+sisa: document.getElementById('sisa').value,
+biayaPemborong: document.getElementById('biayaPemborong').value,
+terbayar: document.getElementById('terbayar').value,
+sisaPembayaran: document.getElementById('sisaPembayaran').value,
+pengeluaran: document.getElementById('pengeluaran').value,
+bop: document.getElementById('bop').value,
+alat: document.getElementById('alat').value,
+koordinasi: document.getElementById('koordinasi').value,
+kontrakan: document.getElementById('kontrakan').value,
+victor: document.getElementById('victor').value,
+kasbon: document.getElementById('kasbon').value,
+feeVictor: document.getElementById('feeVictor').value,
+sisaBersih: document.getElementById('sisaBersih').value
 };
 
-await addDoc(collection(db,'invoice'),data);
+await setDoc(doc(db,'rekapan','dataUtama'),data);
 
-alert('Invoice berhasil disimpan');
-
-loadInvoice();
-
+alert('Rekapan berhasil disimpan');
 }
 
-async function loadInvoice(){
+async function loadRekapan(){
 
-const tbody = document.getElementById('invoiceBody');
-
-tbody.innerHTML='';
-
-const querySnapshot = await getDocs(collection(db,'invoice'));
+const querySnapshot = await getDocs(collection(db,'rekapan'));
 
 querySnapshot.forEach((docSnap)=>{
 
 const data = docSnap.data();
 
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td>${data.tanggal || ''}</td>
-<td>${data.noinvoice || ''}</td>
-<td>${data.perusahaan || ''}</td>
-<td>${data.pekerjaan || ''}</td>
-<td>${data.nilai || ''}</td>
-<td>${data.keterangan || ''}</td>
-<td>
-<button class="btn-delete" onclick="hapusInvoiceFirebase('${docSnap.id}')">Hapus</button>
-<button class="btn-create" onclick="downloadInvoice('${data.perusahaan}','${data.tanggal}','${data.noinvoice}','${data.pekerjaan}','${data.nilai}','${data.keterangan}')">Buat</button>
-</td>
-`;
-
-tbody.appendChild(row);
+Object.keys(data).forEach(key=>{
+if(document.getElementById(key)){
+document.getElementById(key).value = data[key];
+}
+});
 
 });
 
 }
 
-window.hapusInvoiceFirebase = async function(id){
-await deleteDoc(doc(db,'invoice',id));
-loadInvoice();
-}
-
-window.downloadInvoice = async function(perusahaan,tanggal,noinvoice,pekerjaan,nilai,keterangan){
-
-try{
-
-const response = await fetch('invoice.xlsx');
-const arrayBuffer = await response.arrayBuffer();
-
-const workbook = XLSX.read(arrayBuffer,{type:'array'});
-const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-sheet['D17'] = {t:'s',v:perusahaan};
-sheet['J14'] = {t:'s',v:tanggal};
-sheet['J15'] = {t:'s',v:noinvoice};
-sheet['D19'] = {t:'s',v:pekerjaan};
-sheet['J27'] = {t:'n',v:Number(nilai)};
-sheet['D29'] = {t:'s',v:keterangan};
-
-XLSX.writeFile(workbook,`${noinvoice}.xlsx`);
-
-}catch(error){
-alert('invoice.xlsx tidak ditemukan');
-}
-
-}
-
-window.buatInvoice = function(button){
-
-const row = button.closest('tr');
-
-const perusahaan = row.querySelector('.perusahaan').value;
-const tanggal = row.querySelector('.tanggal').value;
-const noinvoice = row.querySelector('.noinvoice').value;
-const pekerjaan = row.querySelector('.pekerjaan').value;
-const nilai = row.querySelector('.nilai').value;
-const keterangan = row.querySelector('.keterangan').value;
-
-window.downloadInvoice(perusahaan,tanggal,noinvoice,pekerjaan,nilai,keterangan);
-
-}
-
 /* =========================
-PENAWARAN
+ARUS KAS
 ========================= */
 
-window.tambahPenawaran = function(){
+window.tambahArusKas = function(){
 
-const tbody = document.getElementById('penawaranBody');
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td><input type="date" class="tanggal"></td>
-<td><input type="text" class="nopenawaran"></td>
-<td><input type="text" class="perusahaan"></td>
-<td><input type="text" class="pekerjaan"></td>
-<td><input type="number" class="nilai"></td>
-<td><input type="text" class="keterangan"></td>
-<td>
-<div class="aksi-wrap">
-<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
-<button class="btn-save" onclick="simpanPenawaran(this)">Simpan</button>
-</div>
-</td>
-`;
-
-tbody.appendChild(row);
-
-}
-
-window.simpanPenawaran = async function(button){
-
-const row = button.closest('tr');
-
-const data = {
-
-tanggal: row.querySelector('.tanggal').value,
-nomor: row.querySelector('.nopenawaran').value,
-perusahaan: row.querySelector('.perusahaan').value,
-pekerjaan: row.querySelector('.pekerjaan').value,
-nilai: row.querySelector('.nilai').value,
-keterangan: row.querySelector('.keterangan').value
-
-};
-
-await addDoc(collection(db,'penawaran'),data);
-
-alert('Penawaran berhasil disimpan');
-
-loadPenawaran();
-
-}
-
-async function loadPenawaran(){
-
-const tbody = document.getElementById('penawaranBody');
-
-tbody.innerHTML='';
-
-const querySnapshot = await getDocs(collection(db,'penawaran'));
-
-querySnapshot.forEach((docSnap)=>{
-
-const data = docSnap.data();
-
-const row = document.createElement('tr');
-
-row.innerHTML = `
-<td>${data.tanggal}</td>
-<td>${data.nomor}</td>
-<td>${data.perusahaan}</td>
-<td>${data.pekerjaan}</td>
-<td>${data.nilai}</td>
-<td>${data.keterangan}</td>
-<td>
-<button class="btn-delete" onclick="hapusPenawaran('${docSnap.id}')">Hapus</button>
-</td>
-`;
-
-tbody.appendChild(row);
-
-});
-
-}
-
-window.hapusPenawaran = async function(id){
-await deleteDoc(doc(db,'penawaran',id));
-loadPenawaran();
-}
-
-/* =========================
-LAPORAN KEUANGAN
-========================= */
-
-window.tambahKeuangan = function(){
-
-const tbody = document.getElementById('keuanganBody');
+const tbody = document.getElementById('arusKasBody');
 
 const row = document.createElement('tr');
 
@@ -290,45 +657,41 @@ row.innerHTML = `
 <td><input type="text" class="keterangan"></td>
 <td>
 <div class="aksi-wrap">
+<button class="btn-save" onclick="simpanArusKas(this)">Simpan</button>
 <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
-<button class="btn-save" onclick="simpanKeuangan(this)">Simpan</button>
 </div>
 </td>
 `;
 
 tbody.appendChild(row);
-
 }
 
-window.simpanKeuangan = async function(button){
+window.simpanArusKas = async function(button){
 
 const row = button.closest('tr');
 
 const data = {
-
 tanggal: row.querySelector('.tanggal').value,
 uraian: row.querySelector('.uraian').value,
 masuk: row.querySelector('.masuk').value,
 keluar: row.querySelector('.keluar').value,
 keterangan: row.querySelector('.keterangan').value
-
 };
 
-await addDoc(collection(db,'keuangan'),data);
+await addDoc(collection(db,'aruskas'),data);
 
-alert('Laporan keuangan berhasil disimpan');
+alert('Arus kas berhasil disimpan');
 
-loadKeuangan();
-
+loadArusKas();
 }
 
-async function loadKeuangan(){
+async function loadArusKas(){
 
-const tbody = document.getElementById('keuanganBody');
+const tbody = document.getElementById('arusKasBody');
 
 tbody.innerHTML='';
 
-const querySnapshot = await getDocs(collection(db,'keuangan'));
+const querySnapshot = await getDocs(collection(db,'aruskas'));
 
 querySnapshot.forEach((docSnap)=>{
 
@@ -343,324 +706,312 @@ row.innerHTML = `
 <td>${data.keluar}</td>
 <td>${data.keterangan}</td>
 <td>
-<button class="btn-delete" onclick="hapusKeuangan('${docSnap.id}')">Hapus</button>
+<button class="btn-delete" onclick="hapusArusKas('${docSnap.id}')">Hapus</button>
 </td>
 `;
 
 tbody.appendChild(row);
 
 });
-
 }
 
-window.hapusKeuangan = async function(id){
-await deleteDoc(doc(db,'keuangan',id));
-loadKeuangan();
+window.hapusArusKas = async function(id){
+await deleteDoc(doc(db,'aruskas',id));
+loadArusKas();
 }
 
+window.hapusBaris = function(button){
+button.closest('tr').remove();
+}
+
+/* =========================
+PEMBORONG
+========================= */
+
+window.tambahPemborong = function(){
+
+const tbody = document.getElementById('pemborongBody');
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+<td><input type="date" class="tanggal"></td>
+<td><input type="text" class="pekerjaan"></td>
+<td><input type="number" class="nilai"></td>
+<td><input type="text" class="keterangan"></td>
+<td>
+<div class="aksi-wrap">
+<button class="btn-save" onclick="simpanPemborong(this)">Simpan</button>
+<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+</div>
+</td>
+`;
+
+tbody.appendChild(row);
+}
+
+window.simpanPemborong = async function(button){
+
+const row = button.closest('tr');
+
+const data = {
+tanggal: row.querySelector('.tanggal').value,
+pekerjaan: row.querySelector('.pekerjaan').value,
+nilai: row.querySelector('.nilai').value,
+keterangan: row.querySelector('.keterangan').value
+};
+
+await addDoc(collection(db,'pemborong'),data);
+
+alert('Data pemborong berhasil disimpan');
+
+loadPemborong();
+}
+
+async function loadPemborong(){
+
+const tbody = document.getElementById('pemborongBody');
+
+tbody.innerHTML='';
+
+const querySnapshot = await getDocs(collection(db,'pemborong'));
+
+querySnapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+<td>${data.tanggal}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+<td>
+<button class="btn-delete" onclick="hapusPemborong('${docSnap.id}')">Hapus</button>
+</td>
+`;
+
+tbody.appendChild(row);
+
+});
+}
+
+window.hapusPemborong = async function(id){
+await deleteDoc(doc(db,'pemborong',id));
+loadPemborong();
+}
+
+/* =========================
+KHANZA
+========================= */
+
+window.tambahKhanza = function(){
+
+const tbody = document.getElementById('khanzaBody');
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+<td><input type="date" class="tanggal"></td>
+<td><input type="text" class="pekerjaan"></td>
+<td><input type="number" class="nilai"></td>
+<td><input type="text" class="keterangan"></td>
+<td>
+<div class="aksi-wrap">
+<button class="btn-save" onclick="simpanKhanza(this)">Simpan</button>
+<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+</div>
+</td>
+`;
+
+tbody.appendChild(row);
+}
+
+window.simpanKhanza = async function(button){
+
+const row = button.closest('tr');
+
+const data = {
+tanggal: row.querySelector('.tanggal').value,
+pekerjaan: row.querySelector('.pekerjaan').value,
+nilai: row.querySelector('.nilai').value,
+keterangan: row.querySelector('.keterangan').value
+};
+
+await addDoc(collection(db,'khanza'),data);
+
+alert('Data khanza berhasil disimpan');
+
+loadKhanza();
+}
+
+async function loadKhanza(){
+
+const tbody = document.getElementById('khanzaBody');
+
+tbody.innerHTML='';
+
+const querySnapshot = await getDocs(collection(db,'khanza'));
+
+querySnapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+const row = document.createElement('tr');
+
+row.innerHTML = `
+<td>${data.tanggal}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+<td>
+<button class="btn-delete" onclick="hapusKhanza('${docSnap.id}')">Hapus</button>
+</td>
+`;
+
+tbody.appendChild(row);
+
+});
+}
+
+window.hapusKhanza = async function(id){
+await deleteDoc(doc(db,'khanza',id));
+loadKhanza();
+}
+
+/* =========================
+INVOICE
+========================= */
+
+window.tambahInvoice = function(){
+const tbody = document.getElementById('invoiceBody');
+const row = document.createElement('tr');
+row.innerHTML = `
+<td><input type="date" class="tanggal"></td>
+<td><input type="text" class="noinvoice"></td>
+<td><input type="text" class="perusahaan"></td>
+<td><input type="text" class="pekerjaan"></td>
+<td><input type="number" class="nilai"></td>
+<td><input type="text" class="keterangan"></td>
+<td>
+<div class="aksi-wrap">
+<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+<button class="btn-save" onclick="simpanInvoice(this)">Simpan</button>
+</div>
+</td>`;
+tbody.appendChild(row);
+}
+
+window.simpanInvoice = async function(button){
+const row = button.closest('tr');
+const data = {
+tanggal: row.querySelector('.tanggal').value,
+noinvoice: row.querySelector('.noinvoice').value,
+perusahaan: row.querySelector('.perusahaan').value,
+pekerjaan: row.querySelector('.pekerjaan').value,
+nilai: row.querySelector('.nilai').value,
+keterangan: row.querySelector('.keterangan').value
+};
+await addDoc(collection(db,'invoice'),data);
+alert('Invoice berhasil disimpan');
+loadInvoice();
+}
+
+async function loadInvoice(){
+const tbody = document.getElementById('invoiceBody');
+tbody.innerHTML='';
+const querySnapshot = await getDocs(collection(db,'invoice'));
+querySnapshot.forEach((docSnap)=>{
+const data = docSnap.data();
+const row = document.createElement('tr');
+row.innerHTML = `
+<td>${data.tanggal}</td>
+<td>${data.noinvoice}</td>
+<td>${data.perusahaan}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+<td><button class="btn-delete" onclick="hapusInvoiceFirebase('${docSnap.id}')">Hapus</button></td>`;
+tbody.appendChild(row);
+});
+}
+
+window.hapusInvoiceFirebase = async function(id){
+await deleteDoc(doc(db,'invoice',id));
+loadInvoice();
+}
+
+/* =========================
+PENAWARAN
+========================= */
+
+window.tambahPenawaran = function(){
+const tbody = document.getElementById('penawaranBody');
+const row = document.createElement('tr');
+row.innerHTML = `
+<td><input type="date" class="tanggal"></td>
+<td><input type="text" class="nopenawaran"></td>
+<td><input type="text" class="perusahaan"></td>
+<td><input type="text" class="pekerjaan"></td>
+<td><input type="number" class="nilai"></td>
+<td><input type="text" class="keterangan"></td>
+<td>
+<div class="aksi-wrap">
+<button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+<button class="btn-save" onclick="simpanPenawaran(this)">Simpan</button>
+</div>
+</td>`;
+tbody.appendChild(row);
+}
+
+window.simpanPenawaran = async function(button){
+const row = button.closest('tr');
+const data = {
+tanggal: row.querySelector('.tanggal').value,
+nomor: row.querySelector('.nopenawaran').value,
+perusahaan: row.querySelector('.perusahaan').value,
+pekerjaan: row.querySelector('.pekerjaan').value,
+nilai: row.querySelector('.nilai').value,
+keterangan: row.querySelector('.keterangan').value
+};
+await addDoc(collection(db,'penawaran'),data);
+alert('Penawaran berhasil disimpan');
+loadPenawaran();
+}
+
+async function loadPenawaran(){
+const tbody = document.getElementById('penawaranBody');
+tbody.innerHTML='';
+const querySnapshot = await getDocs(collection(db,'penawaran'));
+querySnapshot.forEach((docSnap)=>{
+const data = docSnap.data();
+const row = document.createElement('tr');
+row.innerHTML = `
+<td>${data.tanggal}</td>
+<td>${data.nomor}</td>
+<td>${data.perusahaan}</td>
+<td>${data.pekerjaan}</td>
+<td>${data.nilai}</td>
+<td>${data.keterangan}</td>
+<td><button class="btn-delete" onclick="hapusPenawaran('${docSnap.id}')">Hapus</button></td>`;
+tbody.appendChild(row);
+});
+}
+
+window.hapusPenawaran = async function(id){
+await deleteDoc(doc(db,'penawaran',id));
+loadPenawaran();
+}
+
+loadRekapan();
+loadArusKas();
+loadPemborong();
+loadKhanza();
 loadInvoice();
 loadPenawaran();
-loadKeuangan();
 
 </script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:'Poppins',sans-serif;
-background:#f4f8fc;
-}
-
-.sidebar{
-width:280px;
-height:100vh;
-position:fixed;
-left:0;
-top:0;
-background:linear-gradient(180deg,#0f4c81,#1f78d1);
-color:white;
-padding:30px 20px;
-overflow:auto;
-}
-
-.sidebar img{
-width:90px;
-display:block;
-margin:auto;
-margin-bottom:20px;
-}
-
-.sidebar h2{
-text-align:center;
-margin-bottom:40px;
-font-size:22px;
-}
-
-.sidebar ul{
-list-style:none;
-}
-
-.sidebar ul li{
-margin-bottom:15px;
-}
-
-.sidebar ul li a{
-text-decoration:none;
-color:white;
-display:block;
-padding:14px 18px;
-border-radius:12px;
-transition:0.3s;
-font-weight:500;
-}
-
-.sidebar ul li a:hover{
-background:rgba(255,255,255,0.15);
-}
-
-.main{
-margin-left:280px;
-padding:40px;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:35px;
-}
-
-.topbar h1{
-color:#0f4c81;
-}
-
-.logout-btn{
-background:red;
-color:white;
-border:none;
-padding:12px 18px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-}
-
-.card{
-background:white;
-padding:35px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
-margin-bottom:30px;
-}
-
-.card h2{
-color:#0f4c81;
-margin-bottom:25px;
-}
-
-.btn-add{
-background:#1f78d1;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-font-weight:600;
-cursor:pointer;
-margin-bottom:20px;
-}
-
-.table-wrap{
-overflow:auto;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-table th{
-background:#0f4c81;
-color:white;
-}
-
-table th,
-table td{
-padding:12px;
-border:1px solid #ddd;
-text-align:left;
-}
-
-table input{
-width:100%;
-padding:10px;
-border:1px solid #ccc;
-border-radius:8px;
-}
-
-.aksi-wrap{
-display:flex;
-flex-direction:column;
-gap:8px;
-}
-
-.btn-delete{
-background:red;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.btn-save{
-background:#1f78d1;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.btn-create{
-background:green;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-}
-
-@media(max-width:900px){
-
-.sidebar{
-position:relative;
-width:100%;
-height:auto;
-}
-
-.main{
-margin-left:0;
-padding:20px;
-}
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="sidebar">
-
-<img src="logo.png" alt="Logo">
-
-<h2>Dashboard Admin</h2>
-
-<ul>
-<li><a href="#keuangan">📊 Laporan Keuangan</a></li>
-<li><a href="#invoice">🧾 Invoice</a></li>
-<li><a href="#penawaran">💰 Penawaran Harga</a></li>
-</ul>
-
-</div>
-
-<div class="main">
-
-<div class="topbar">
-<h1>Dashboard Perusahaan</h1>
-<button class="logout-btn" onclick="logout()">Logout</button>
-</div>
-
-<!-- LAPORAN KEUANGAN -->
-<div class="card" id="keuangan">
-
-<h2>Laporan Keuangan</h2>
-
-<button class="btn-add" onclick="tambahKeuangan()">
-+ Tambah Data
-</button>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>Uraian</th>
-<th>Uang Masuk</th>
-<th>Uang Keluar</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="keuanganBody"></tbody>
-</table>
-</div>
-
-</div>
-
-<!-- INVOICE -->
-<div class="card" id="invoice">
-
-<h2>Data Invoice</h2>
-
-<button class="btn-add" onclick="tambahInvoice()">
-+ Tambah Invoice
-</button>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>No Invoice</th>
-<th>Perusahaan</th>
-<th>Pekerjaan</th>
-<th>Nilai</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="invoiceBody"></tbody>
-</table>
-</div>
-
-</div>
-
-<!-- PENAWARAN -->
-<div class="card" id="penawaran">
-
-<h2>Penawaran Harga</h2>
-
-<button class="btn-add" onclick="tambahPenawaran()">
-+ Tambah Penawaran
-</button>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>No Penawaran</th>
-<th>Perusahaan</th>
-<th>Pekerjaan</th>
-<th>Nilai</th>
-<th>Keterangan</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="penawaranBody"></tbody>
-</table>
-</div>
-
-</div>
-
-</div>
 
 </body>
 </html>
