@@ -1,31 +1,31 @@
 <!DOCTYPE html>
-<body>
+<h2>Login Admin</h2>
 
-<div class="login-box">
+<p>
+Silakan masuk menggunakan akun administrator perusahaan.
+</p>
 
-  <img src="logo.png" alt="Logo">
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="email" placeholder="Masukkan email admin">
+</div>
 
-  <h2>Admin Login</h2>
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="password" placeholder="Masukkan password">
+</div>
 
-  <p>
-    CV KHANZA PERDANA MANDIRI
-  </p>
+<button class="login-btn" onclick="login()">
+Masuk Dashboard
+</button>
 
-  <div class="input-group">
-    <label>Email</label>
-    <input type="email" id="email" placeholder="Masukkan email">
-  </div>
+<div class="error" id="error"></div>
 
-  <div class="input-group">
-    <label>Password</label>
-    <input type="password" id="password" placeholder="Masukkan password">
-  </div>
+<div class="copyright">
+© 2026 CV KHANZA PERDANA MANDIRI
+</div>
 
-  <button class="login-btn" onclick="login()">
-    Login
-  </button>
-
-  <div class="error" id="error"></div>
+</div>
 
 </div>
 
@@ -36,10 +36,9 @@ function login(){
 const email = document.getElementById('email').value;
 const password = document.getElementById('password').value;
 
-if(email === 'khanzaperdanamandiri@gmail.com' && password === 'Nazneen22'){
+if(email === 'khanzaperdanamandiri' && password === 'Nazneen22'){
 
 localStorage.setItem('login','true');
-
 window.location.href = 'dashboard.html';
 
 }else{
