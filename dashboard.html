@@ -613,33 +613,33 @@
         tbody.appendChild(row);
     }
 
-    window.simpanArusKas = async function(button){
-        const row = button.closest('tr');
-        const data = {
-            keterangan: row.querySelector('.keterangan').value,
-            tanggal: row.querySelector('.tanggal').value,
-            uraian: row.querySelector('.uraian').value,
-            masuk: parseFloat(row.querySelector('.masuk').value) || 0,
-            keluar: parseFloat(row.querySelector('.keluar').value) || 0
-        };
-        await addDoc(collection(db,'arus_kas'),data);
+window.simpanArusKas = async function(button){
+    const row = button.closest('tr');
+    const data = {
+        keterangan: row.querySelector('.keterangan').value,
+        tanggal: row.querySelector('.tanggal').value,
+        uraian: row.querySelector('.uraian').value,
+        masuk: parseFloat(row.querySelector('.masuk').value) || 0,
+        keluar: parseFloat(row.querySelector('.keluar').value) || 0
+    };
+    await addDoc(collection(db,'arus_kas'),data);
 
-        // KIRIM KE GOOGLE SHEET CIKANDE
-        fetch(SHEET_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify({
-            uraian: data.uraian,
-            keterangan: data.keterangan,
-            tanggal: data.tanggal,
-            masuk: data.masuk,
-            keluar: data.keluar
-          })
-        }).then(() => console.log('Data terkirim ke Sheet CIKANDE'));
-
-        alert('Transaksi berhasil disimpan');
-        loadArusKas();
+    // KIRIM KE GOOGLE SHEET CIKANDE - VERSI FIX
+    try {
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ini yang beda
+        body: JSON.stringify(data)
+      });
+      console.log('Data terkirim ke Sheet CIKANDE');
+    } catch (error) {
+      console.log('Gagal kirim ke Sheet:', error);
     }
+
+    alert('Transaksi berhasil disimpan');
+    loadArusKas();
+}
 
     async function loadArusKas(){
         const tbody = document.getElementById('arusKasBody');
