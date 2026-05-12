@@ -13,33 +13,32 @@
     <style>
         *{ margin:0; padding:0; box-sizing:border-box; }
         body{ font-family:'Poppins',sans-serif; background:#eef3f9; }
-     .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; z-index:100; }
-     .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
-     .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
-     .sidebar ul{ list-style:none; }
-     .sidebar ul li{ margin-bottom:15px; }
-     .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
-     .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
-     .main{ margin-left:270px; padding:35px; }
-     .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-     .topbar h1{ color:#0f4c81; font-size:30px; }
-     .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
-     .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
-     .card h2{ margin-bottom:20px; color:#0f4c81; }
-     .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
+      .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; z-index:100; }
+      .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
+      .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
+      .sidebar ul{ list-style:none; }
+      .sidebar ul li{ margin-bottom:15px; }
+      .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
+      .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
+      .main{ margin-left:270px; padding:35px; }
+      .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+      .topbar h1{ color:#0f4c81; font-size:30px; }
+      .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
+      .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
+      .card h2{ margin-bottom:20px; color:#0f4c81; }
+      .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
 
         table{ width:100%; border-collapse:separate; border-spacing:0; }
         table th, table td{ border:1px solid #ddd; padding:12px; }
         table th{ background:#0f4c81; color:white; }
         table input, table select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-     .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
-     .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .hidden{ display:none; }
+      .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
+      .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .hidden{ display:none; }
 
-        /* FREEZE PANES: 3 KOTAK BIRU NEMPEL */
-     .summary-box{
+      .summary-box{
             display:grid;
             grid-template-columns:repeat(3, 1fr);
             gap:20px;
@@ -50,7 +49,7 @@
             background:#eef3f9;
             padding-bottom: 10px;
         }
-     .summary-card{
+      .summary-card{
             background:linear-gradient(135deg,#1f78d1,#0f4c81);
             color:white;
             padding:22px 25px;
@@ -58,19 +57,18 @@
             box-shadow:0 4px 12px rgba(31,120,209,0.25);
             min-height:140px;
         }
-     .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
-     .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
-     .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
-     .summary-card.detail div{ margin-bottom:2px; }
+      .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
+      .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
+      .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
+      .summary-card.detail div{ margin-bottom:2px; }
 
-        /* FREEZE PANES: HEADER TABEL NEMPEL */
-     .table-scroll{
+      .table-scroll{
             max-height: 500px;
             overflow-y: auto;
             border-radius: 10px;
             border: 1px solid #ddd;
         }
-     .table-scroll thead th{
+      .table-scroll thead th{
             position: sticky;
             top: 0;
             background:#0f4c81;
@@ -78,20 +76,20 @@
             z-index: 10;
             border:1px solid #0a3a62;
         }
-     .table-scroll tbody td{
+      .table-scroll tbody td{
             background:white;
         }
 
-     .total-row{ background:#f0f7ff; font-weight:700; }
-     .total-row td{ color:#0f4c81; }
+      .total-row{ background:#f0f7ff; font-weight:700; }
+      .total-row td{ color:#0f4c81; }
 
         @media(max-width:1200px){
-         .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+          .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
         }
         @media(max-width:900px){
-         .sidebar{ position:relative; width:100%; height:auto; }
-         .main{ margin-left:0; padding:20px; }
-         .summary-box{ position:relative; top:auto; }
+          .sidebar{ position:relative; width:100%; height:auto; }
+          .main{ margin-left:0; padding:20px; }
+          .summary-box{ position:relative; top:auto; }
         }
     </style>
 </head>
@@ -584,7 +582,7 @@
     }
 
     /* =========================
-       LOGIKA ARUS KAS & LAPORAN
+       LOGIKA ARUS KAS & LAPORAN - SYNC 2 ARAH KE SHEET
        ========================= */
     window.tambahArusKas = function(){
         const tbody = document.getElementById('arusKasBody');
@@ -613,33 +611,37 @@
         tbody.appendChild(row);
     }
 
-window.simpanArusKas = async function(button){
-    const row = button.closest('tr');
-    const data = {
-        keterangan: row.querySelector('.keterangan').value,
-        tanggal: row.querySelector('.tanggal').value,
-        uraian: row.querySelector('.uraian').value,
-        masuk: parseFloat(row.querySelector('.masuk').value) || 0,
-        keluar: parseFloat(row.querySelector('.keluar').value) || 0
-    };
-    await addDoc(collection(db,'arus_kas'),data);
+    // 3.1 SIMPAN + KIRIM ID KE SHEET KOLOM G
+    window.simpanArusKas = async function(button){
+        const row = button.closest('tr');
+        const data = {
+            keterangan: row.querySelector('.keterangan').value,
+            tanggal: row.querySelector('.tanggal').value,
+            uraian: row.querySelector('.uraian').value,
+            masuk: parseFloat(row.querySelector('.masuk').value) || 0,
+            keluar: parseFloat(row.querySelector('.keluar').value) || 0
+        };
 
-    // KIRIM KE GOOGLE SHEET CIKANDE - VERSI FIX
-    try {
-      await fetch(SHEET_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ini yang beda
-        body: JSON.stringify(data)
-      });
-      console.log('Data terkirim ke Sheet CIKANDE');
-    } catch (error) {
-      console.log('Gagal kirim ke Sheet:', error);
+        // 1. Simpan ke Firestore dulu, ambil ID-nya
+        const docRef = await addDoc(collection(db,'arus_kas'), data);
+        data.id = docRef.id; // ID unik dari Firestore
+
+        // 2. Kirim ke Sheet + ID
+        try {
+          await fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(data)
+          });
+          console.log('Data terkirim ke Sheet CIKANDE');
+        } catch (error) {
+          console.log('Gagal kirim ke Sheet:', error);
+        }
+
+        alert('Transaksi berhasil disimpan');
+        loadArusKas();
     }
-
-    alert('Transaksi berhasil disimpan');
-    loadArusKas();
-}
 
     async function loadArusKas(){
         const tbody = document.getElementById('arusKasBody');
@@ -692,9 +694,25 @@ window.simpanArusKas = async function(button){
         document.getElementById('totalBOP').innerText = `BOP: ${formatRupiah(totalBOP)}`;
     }
 
+    // 3.2 HAPUS FIRESTORE + KIRIM PERINTAH DELETE KE SHEET
     window.hapusArusKasFirebase = async function(id){
         if(confirm('Hapus transaksi ini?')){
+            // 1. Hapus dari Firestore
             await deleteDoc(doc(db,'arus_kas',id));
+
+            // 2. Hapus dari Google Sheet
+            try {
+              await fetch(SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'delete', id: id })
+              });
+              console.log('Perintah hapus terkirim ke Sheet');
+            } catch (error) {
+              console.log('Gagal hapus di Sheet:', error);
+            }
+
             loadArusKas();
         }
     }
