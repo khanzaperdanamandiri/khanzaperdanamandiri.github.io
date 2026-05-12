@@ -148,7 +148,6 @@
                     <div id="totalPPN">PPN: Rp 0</div>
                     <div id="totalRetensi">Retensi: Rp 0</div>
                 </div>
-            </div>
             <div class="summary-card">
                 <h3>Total Pemasukan</h3>
                 <p id="totalPemasukan">Rp 0</p>
@@ -156,7 +155,6 @@
                     <div id="totalModal">Modal: Rp 0</div>
                     <div id="totalOpnaman">Opnaman: Rp 0</div>
                 </div>
-            </div>
             <div class="summary-card">
                 <h3>Total Pengeluaran</h3>
                 <p id="totalPengeluaran">Rp 0</p>
@@ -205,6 +203,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const BASE_URL = 'https://khanzaperdanamandiri.github.io/';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycby76I2NCDrxvoxnT-KsEgkNBsBoOY0gIaD4QM4q3ErrSDO2x33BL0HfeR5i6GQ0M8BB/exec';
 
     function formatTanggal(tgl) {
         if (!tgl) return '';
@@ -237,7 +236,7 @@
         document.getElementById(pageId).classList.remove('hidden');
         document.querySelectorAll('.sidebar a').forEach(a=>{ a.classList.remove('active'); });
         el.classList.add('active');
-        
+
         if(pageId === 'laporanPage') loadLaporan();
         if(pageId === 'proyekPage') loadProyek();
     }
@@ -249,11 +248,11 @@
     async function loadExcelFile(fileName){
         const response = await fetch(`${BASE_URL}${fileName}?t=${Date.now()}`, {cache: 'no-store'});
         if (!response.ok) throw new Error(`File ${fileName} tidak ketemu`);
-        
+
         const arrayBuffer = await response.arrayBuffer();
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.load(arrayBuffer);
-        
+
         if(workbook.worksheets.length === 0) throw new Error(`File ${fileName} rusak. Upload ulang.`);
         return workbook.worksheets[0];
     }
@@ -300,7 +299,7 @@
     window.buatInvoice = async function(button){
         const row = button.closest('tr');
         const getValue = (cls, idx) => row.querySelector(cls)? row.querySelector(cls).value : row.children[idx].innerText;
-        
+
         try {
             const worksheet = await loadExcelFile('invoice.xlsx');
             worksheet.getCell('J13').value = formatTanggal(getValue('.tanggal', 0));
@@ -394,7 +393,7 @@
     window.buatPenawaran = async function(button){
         const row = button.closest('tr');
         const getValue = (cls, idx) => row.querySelector(cls)? row.querySelector(cls).value : row.children[idx].innerText;
-        
+
         try {
             const worksheet = await loadExcelFile('penawaran-harga.xlsx');
             worksheet.getCell('D7').value = formatTanggal(getValue('.tanggal', 0));
@@ -490,17 +489,17 @@
         const tbody = document.getElementById('proyekBody');
         tbody.innerHTML='';
         const querySnapshot = await getDocs(collection(db,'proyek'));
-        
+
         let totalPekerjaan = 0;
         let totalPPN = 0;
         let totalRetensi = 0;
-        
+
         querySnapshot.forEach((docSnap)=>{
             const data = docSnap.data();
             totalPekerjaan += data.nilai_pekerjaan || 0;
             totalPPN += data.nilai_ppn || 0;
             totalRetensi += data.nilai_retensi || 0;
-            
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${data.no}</td>
@@ -518,7 +517,7 @@
             `;
             tbody.appendChild(row);
         });
-        
+
         document.getElementById('totalNilaiPekerjaan').innerText = formatRupiah(totalPekerjaan);
         document.getElementById('totalNilaiPPN').innerText = formatRupiah(totalPPN);
         document.getElementById('totalNilaiRetensi').innerText = formatRupiah(totalRetensi);
@@ -571,6 +570,20 @@
             keluar: parseFloat(row.querySelector('.keluar').value) || 0
         };
         await addDoc(collection(db,'arus_kas'),data);
+
+        // KIRIM KE GOOGLE SHEET CIKANDE
+        fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify({
+            uraian: data.uraian,
+            keterangan: data.keterangan,
+            tanggal: data.tanggal,
+            masuk: data.masuk,
+            keluar: data.keluar
+          })
+        }).then(() => console.log('Data terkirim ke Sheet CIKANDE'));
+
         alert('Transaksi berhasil disimpan');
         loadArusKas();
     }
@@ -578,10 +591,10 @@
     async function loadArusKas(){
         const tbody = document.getElementById('arusKasBody');
         tbody.innerHTML='';
-        
+
         const q = query(collection(db,'arus_kas'), orderBy('tanggal','asc'));
         const querySnapshot = await getDocs(q);
-        
+
         let saldo = 0;
         let totalMasuk = 0;
         let totalKeluar = 0;
@@ -589,18 +602,18 @@
         let totalOpnaman = 0;
         let totalPemborong = 0;
         let totalBOP = 0;
-        
+
         querySnapshot.forEach((docSnap)=>{
             const data = docSnap.data();
             saldo += (data.masuk - data.keluar);
             totalMasuk += data.masuk;
             totalKeluar += data.keluar;
-            
+
             if(data.keterangan === 'Modal') totalModal += data.masuk;
             if(data.keterangan === 'Opnaman') totalOpnaman += data.masuk;
             if(data.keterangan === 'Pemborong') totalPemborong += data.keluar;
             if(data.keterangan === 'BOP') totalBOP += data.keluar;
-            
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${data.keterangan}</td>
@@ -617,7 +630,7 @@
             `;
             tbody.appendChild(row);
         });
-        
+
         document.getElementById('totalPemasukan').innerText = formatRupiah(totalMasuk);
         document.getElementById('totalPengeluaran').innerText = formatRupiah(totalKeluar);
         document.getElementById('totalModal').innerText = `Modal: ${formatRupiah(totalModal)}`;
@@ -647,7 +660,7 @@
         document.getElementById('totalProyek').innerText = formatRupiah(totalProyek);
         document.getElementById('totalPPN').innerText = `PPN: ${formatRupiah(totalPPN)}`;
         document.getElementById('totalRetensi').innerText = `Retensi: ${formatRupiah(totalRetensi)}`;
-        
+
         // Load arus kas
         loadArusKas();
     }
