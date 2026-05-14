@@ -376,6 +376,384 @@
         window.location.href='login.html';
     }
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    
+    <!-- Favicon pakai logo.png yang udah ada di GitHub -->
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body{ font-family:'Poppins',sans-serif; background:#eef3f9; }
+      .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; z-index:100; }
+      .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
+      .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
+      .sidebar ul{ list-style:none; }
+      .sidebar ul li{ margin-bottom:15px; }
+      .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
+      .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
+      .main{ margin-left:270px; padding:35px; }
+      .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+      .topbar h1{ color:#0f4c81; font-size:30px; }
+      .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
+      .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
+      .card h2{ margin-bottom:20px; color:#0f4c81; }
+      .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
+
+        table{ width:100%; border-collapse:separate; border-spacing:0; }
+        table th, table td{ border:1px solid #ddd; padding:12px; }
+        table th{ background:#0f4c81; color:white; }
+        table input, table select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
+      .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
+      .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+      .hidden{ display:none; }
+
+      .summary-box{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:20px;
+            margin-bottom:25px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background:#eef3f9;
+            padding-bottom: 10px;
+        }
+      .summary-card{
+            background:linear-gradient(135deg,#1f78d1,#0f4c81);
+            color:white;
+            padding:22px 25px;
+            border-radius:16px;
+            box-shadow:0 4px 12px rgba(31,120,209,0.25);
+            min-height:140px;
+        }
+      .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
+      .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
+      .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
+      .summary-card.detail div{ margin-bottom:2px; }
+
+      .table-scroll{
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+      .table-scroll thead th{
+            position: sticky;
+            top: 0;
+            background:#0f4c81;
+            color:white;
+            z-index: 10;
+            border:1px solid #0a3a62;
+        }
+      .table-scroll tbody td{
+            background:white;
+        }
+
+      .total-row{ background:#f0f7ff; font-weight:700; }
+      .total-row td{ color:#0f4c81; }
+
+        @media(max-width:1200px){
+          .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+        }
+        @media(max-width:900px){
+          .sidebar{ position:relative; width:100%; height:auto; }
+          .main{ margin-left:0; padding:20px; }
+          .summary-box{ position:relative; top:auto; }
+        }
+        .progress-bar{
+    width:100%;
+    height:18px;
+    background:#dbe8f5;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#00c853,#64dd17);
+    text-align:center;
+    color:white;
+    font-size:11px;
+    font-weight:600;
+}
+
+.progress-card{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.progress-info{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.progress-info h3{
+    color:#0f4c81;
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.progress-info p{
+    font-size:24px;
+    font-weight:700;
+    color:#1f78d1;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <img src="logo.png">
+    <h2>Dashboard Admin</h2>
+    <ul>
+        <li><a class="active" onclick="showPage('invoicePage',this)">🧾 Invoice</a></li>
+        <li><a onclick="showPage('penawaranPage',this)">💰 Penawaran Harga</a></li>
+        <li><a onclick="showPage('proyekPage',this)">📋 Proyek</a></li>
+        <li><a onclick="showPage('laporanPage',this)">📊 Laporan Keuangan</a></li>
+        <li><a onclick="showPage('progressPage',this)">📈 Progress Pekerjaan</a></li>
+    </ul>
+</div>
+
+<div class="main">
+    <div class="topbar">
+        <h1>Dashboard Perusahaan</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div id="invoicePage">
+        <div class="card">
+            <h2>Data Invoice</h2>
+            <button class="btn-add" onclick="tambahInvoice()">+ Tambah Invoice</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>No Invoice</th>
+                        <th>Perusahaan</th>
+                        <th>Pekerjaan</th>
+                        <th>Nilai</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="penawaranPage" class="hidden">
+        <div class="card">
+            <h2>Penawaran Harga</h2>
+            <button class="btn-add" onclick="tambahPenawaran()">+ Tambah Penawaran</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>No Penawaran</th>
+                        <th>Perusahaan</th>
+                        <th>Pekerjaan</th>
+                        <th>Nilai</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="penawaranBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="proyekPage" class="hidden">
+        <div class="card">
+            <h2>Data Proyek</h2>
+            <button class="btn-add" onclick="tambahProyek()">+ Tambah Proyek</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Perusahaan</th>
+                        <th>Pekerjaan</th>
+                        <th>No SPK</th>
+                        <th>Nilai Pekerjaan</th>
+                        <th>Nilai PPN</th>
+                        <th>Nilai Retensi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="proyekBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4">TOTAL</td>
+                        <td id="totalNilaiPekerjaan">Rp 0</td>
+                        <td id="totalNilaiPPN">Rp 0</td>
+                        <td id="totalNilaiRetensi">Rp 0</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div id="laporanPage" class="hidden">
+        <div class="summary-box">
+            <div class="summary-card">
+                <h3>Total Nilai Proyek</h3>
+                <p id="totalProyek">Rp 0</p>
+                <div class="detail">
+                    <div id="totalPPN">PPN: Rp 0</div>
+                    <div id="totalRetensi">Retensi: Rp 0</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Pemasukan</h3>
+                <p id="totalPemasukan">Rp 0</p>
+                <div class="detail">
+                    <div id="totalModal">Modal: Rp 0</div>
+                    <div id="totalOpnaman">Opnaman: Rp 0</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Pengeluaran</h3>
+                <p id="totalPengeluaran">Rp 0</p>
+                <div class="detail">
+                    <div id="totalPemborong">Pemborong: Rp 0</div>
+                    <div id="totalBOP">BOP: Rp 0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Arus Kas</h2>
+            <button class="btn-add" onclick="tambahArusKas()">+ Tambah Transaksi</button>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Keterangan</th>
+                            <th>Tanggal</th>
+                            <th>Uraian</th>
+                            <th>Masuk</th>
+                            <th>Keluar</th>
+                            <th>Saldo</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="arusKasBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="progressPage" class="hidden">
+
+    <div class="progress-card">
+
+        <div class="progress-info">
+            <h3>Total Progress Fisik</h3>
+            <p id="totalFisik">0%</p>
+        </div>
+
+        <div class="progress-info">
+            <h3>Total Pembayaran</h3>
+            <p id="totalBayar">Rp 0</p>
+        </div>
+
+        <div class="progress-info">
+            <h3>Sisa Pembayaran</h3>
+            <p id="sisaBayar">Rp 0</p>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Data Progress Pekerjaan</h2>
+
+        <button class="btn-add" onclick="tambahProgress()">
+            + Tambah Progress
+        </button>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Nama Pekerjaan</th>
+                    <th>Volume</th>
+                    <th>Terpasang</th>
+                    <th>Satuan</th>
+                    <th>Nilai Pembayaran</th>
+                    <th>Progress</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody id="progressBody"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyADV-EDV5k_C9wyxWX5mFFj4BVqOt5nmgs",
+        authDomain: "khanza-dashboard.firebaseapp.com",
+        projectId: "khanza-dashboard",
+        storageBucket: "khanza-dashboard.firebasestorage.app",
+        messagingSenderId: "1078817547940",
+        appId: "1:1078817547940:web:218d66f38846596e862831",
+        measurementId: "G-YH3MGMZGY4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const BASE_URL = 'https://khanzaperdanamandiri.github.io/';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycby76I2NCDrxvoxnT-KsEgkNBsBoOY0gIaD4QM4q3ErrSDO2x33BL0HfeR5i6GQ0M8BB/exec';
+
+    function formatTanggal(tgl) {
+        if (!tgl) return '';
+        const parts = tgl.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return tgl;
+    }
+
+    function formatRupiah(angka) {
+        if (!angka) return 'Rp 0';
+        return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
+    }
+
+    window.logout = function(){
+        localStorage.removeItem('login');
+        window.location.href='login.html';
+    }
+
+    if(localStorage.getItem('login')!== 'true'){
+        window.location.href='login.html';
+    }
+
 window.showPage = function(pageId,el){
 
     document.getElementById('invoicePage').classList.add('hidden');
@@ -397,6 +775,662 @@ window.showPage = function(pageId,el){
     if(pageId === 'progressPage') loadProgress();
 }
     }
+
+    window.hapusBaris = function(button){
+        button.closest('tr').remove();
+    }
+
+    async function loadExcelFile(fileName){
+        const response = await fetch(`${BASE_URL}${fileName}?t=${Date.now()}`, {cache: 'no-store'});
+        if (!response.ok) throw new Error(`File ${fileName} tidak ketemu`);
+
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(arrayBuffer);
+
+        if(workbook.worksheets.length === 0) throw new Error(`File ${fileName} rusak. Upload ulang.`);
+        return workbook.worksheets[0];
+    }
+/* =========================
+LOGIKA PROGRESS PEKERJAAN
+========================= */
+
+window.tambahProgress = function(){
+
+    const tbody = document.getElementById('progressBody');
+
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+        <td><input type="date" class="tanggal"></td>
+
+        <td><input type="text" class="nama_pekerjaan"></td>
+
+        <td><input type="number" class="volume"></td>
+
+        <td><input type="number" class="terpasang"></td>
+
+        <td><input type="text" class="satuan"></td>
+
+        <td><input type="number" class="pembayaran"></td>
+
+        <td>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:0%">0%</div>
+            </div>
+        </td>
+
+        <td>
+            <div class="aksi-wrap">
+
+                <button class="btn-save"
+                    onclick="simpanProgress(this)">
+                    Simpan
+                </button>
+
+                <button class="btn-delete"
+                    onclick="hapusBaris(this)">
+                    Hapus
+                </button>
+
+            </div>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+
+    const volume = row.querySelector('.volume');
+    const terpasang = row.querySelector('.terpasang');
+    const progressFill = row.querySelector('.progress-fill');
+
+    function hitungProgress(){
+
+        const v = parseFloat(volume.value) || 0;
+        const t = parseFloat(terpasang.value) || 0;
+
+        let persen = 0;
+
+        if(v > 0){
+            persen = Math.round((t / v) * 100);
+        }
+
+        progressFill.style.width = persen + '%';
+        progressFill.innerText = persen + '%';
+    }
+
+    volume.addEventListener('input', hitungProgress);
+    terpasang.addEventListener('input', hitungProgress);
+}
+
+window.simpanProgress = async function(button){
+
+    const row = button.closest('tr');
+
+    const volume =
+        parseFloat(row.querySelector('.volume').value) || 0;
+
+    const terpasang =
+        parseFloat(row.querySelector('.terpasang').value) || 0;
+
+    let progress = 0;
+
+    if(volume > 0){
+        progress = Math.round((terpasang / volume) * 100);
+    }
+
+    const data = {
+
+        tanggal: row.querySelector('.tanggal').value,
+
+        nama_pekerjaan:
+            row.querySelector('.nama_pekerjaan').value,
+
+        volume: volume,
+
+        terpasang: terpasang,
+
+        satuan: row.querySelector('.satuan').value,
+
+        pembayaran:
+            parseFloat(row.querySelector('.pembayaran').value) || 0,
+
+        progress: progress
+    };
+
+    await addDoc(collection(db,'progress_pekerjaan'), data);
+
+    alert('Progress berhasil disimpan');
+
+    loadProgress();
+}
+
+async function loadProgress(){
+
+    const tbody = document.getElementById('progressBody');
+
+    tbody.innerHTML = '';
+
+    const querySnapshot =
+        await getDocs(collection(db,'progress_pekerjaan'));
+
+    let totalBayar = 0;
+    let totalProgress = 0;
+    let jumlahData = 0;
+
+    querySnapshot.forEach((docSnap)=>{
+
+        const data = docSnap.data();
+
+        totalBayar += data.pembayaran || 0;
+        totalProgress += data.progress || 0;
+        jumlahData++;
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+
+            <td>${formatTanggal(data.tanggal)}</td>
+
+            <td>${data.nama_pekerjaan}</td>
+
+            <td>${data.volume}</td>
+
+            <td>${data.terpasang}</td>
+
+            <td>${data.satuan}</td>
+
+            <td>${formatRupiah(data.pembayaran)}</td>
+
+            <td>
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                        style="width:${data.progress}%">
+
+                        ${data.progress}%
+
+                    </div>
+
+                </div>
+            </td>
+
+            <td>
+
+                <button class="btn-delete"
+                    onclick="hapusProgressFirebase('${docSnap.id}')">
+
+                    Hapus
+
+                </button>
+
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    const rataProgress =
+        jumlahData > 0
+        ? Math.round(totalProgress / jumlahData)
+        : 0;
+
+    document.getElementById('totalFisik').innerText =
+        rataProgress + '%';
+
+    document.getElementById('totalBayar').innerText =
+        formatRupiah(totalBayar);
+
+    document.getElementById('sisaBayar').innerText =
+        formatRupiah(0);
+}
+
+window.hapusProgressFirebase = async function(id){
+
+    if(confirm('Hapus progress ini?')){
+
+        await deleteDoc(doc(db,'progress_pekerjaan',id));
+
+        loadProgress();
+    }
+}
+    /* =========================
+       LOGIKA INVOICE
+       ========================= */
+    window.tambahInvoice = function(){
+        const tbody = document.getElementById('invoiceBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="date" class="tanggal"></td>
+            <td><input type="text" class="noinvoice"></td>
+            <td><input type="text" class="perusahaan"></td>
+            <td><input type="text" class="pekerjaan"></td>
+            <td><input type="number" class="nilai"></td>
+            <td><input type="text" class="keterangan"></td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanInvoice(this)">Simpan</button>
+                    <button class="btn-create" onclick="buatInvoice(this)">Buat</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    window.simpanInvoice = async function(button){
+        const row = button.closest('tr');
+        const data = {
+            tanggal: row.querySelector('.tanggal').value,
+            noinvoice: row.querySelector('.noinvoice').value,
+            perusahaan: row.querySelector('.perusahaan').value,
+            pekerjaan: row.querySelector('.pekerjaan').value,
+            nilai: row.querySelector('.nilai').value,
+            keterangan: row.querySelector('.keterangan').value
+        };
+        await addDoc(collection(db,'invoice'),data);
+        alert('Invoice berhasil disimpan');
+        loadInvoice();
+    }
+
+    window.buatInvoice = async function(button){
+        const row = button.closest('tr');
+        const getValue = (cls, idx) => row.querySelector(cls)? row.querySelector(cls).value : row.children[idx].innerText;
+
+        try {
+            const worksheet = await loadExcelFile('invoice.xlsx');
+            worksheet.getCell('J13').value = formatTanggal(getValue('.tanggal', 0));
+            worksheet.getCell('J14').value = getValue('.noinvoice', 1);
+            worksheet.getCell('D15').value = getValue('.perusahaan', 2);
+
+            const buffer = await worksheet.workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${getValue('.noinvoice', 1) || 'invoice'}.xlsx`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('ERROR INVOICE:', error);
+            alert(`Gagal: ${error.message}`);
+        }
+    }
+
+    async function loadInvoice(){
+        const tbody = document.getElementById('invoiceBody');
+        tbody.innerHTML='';
+        const querySnapshot = await getDocs(collection(db,'invoice'));
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${formatTanggal(data.tanggal)}</td>
+                <td>${data.noinvoice}</td>
+                <td>${data.perusahaan}</td>
+                <td>${data.pekerjaan}</td>
+                <td>${data.nilai}</td>
+                <td>${data.keterangan}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-create" onclick="buatInvoice(this)">Buat</button>
+                        <button class="btn-delete" onclick="hapusInvoiceFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    window.hapusInvoiceFirebase = async function(id){
+        if(confirm('Hapus data invoice ini?')){
+            await deleteDoc(doc(db,'invoice',id));
+            loadInvoice();
+        }
+    }
+
+    /* =========================
+       LOGIKA PENAWARAN
+       ========================= */
+    window.tambahPenawaran = function(){
+        const tbody = document.getElementById('penawaranBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="date" class="tanggal"></td>
+            <td><input type="text" class="nopenawaran"></td>
+            <td><input type="text" class="perusahaan"></td>
+            <td><input type="text" class="pekerjaan"></td>
+            <td><input type="number" class="nilai"></td>
+            <td><input type="text" class="keterangan"></td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanPenawaran(this)">Simpan</button>
+                    <button class="btn-create" onclick="buatPenawaran(this)">Buat</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    window.simpanPenawaran = async function(button){
+        const row = button.closest('tr');
+        const data = {
+            tanggal: row.querySelector('.tanggal').value,
+            nomor: row.querySelector('.nopenawaran').value,
+            perusahaan: row.querySelector('.perusahaan').value,
+            pekerjaan: row.querySelector('.pekerjaan').value,
+            nilai: row.querySelector('.nilai').value,
+            keterangan: row.querySelector('.keterangan').value
+        };
+        await addDoc(collection(db,'penawaran'),data);
+        alert('Penawaran berhasil disimpan');
+        loadPenawaran();
+    }
+
+    window.buatPenawaran = async function(button){
+        const row = button.closest('tr');
+        const getValue = (cls, idx) => row.querySelector(cls)? row.querySelector(cls).value : row.children[idx].innerText;
+
+        try {
+            const worksheet = await loadExcelFile('penawaran-harga.xlsx');
+            worksheet.getCell('D7').value = formatTanggal(getValue('.tanggal', 0));
+            worksheet.getCell('D10').value = getValue('.perusahaan', 2);
+            worksheet.getCell('J7').value = getValue('.nopenawaran', 1);
+
+            const buffer = await worksheet.workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${getValue('.nopenawaran', 1) || 'penawaran'}.xlsx`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('ERROR PENAWARAN:', error);
+            alert(`Gagal: ${error.message}`);
+        }
+    }
+
+    async function loadPenawaran(){
+        const tbody = document.getElementById('penawaranBody');
+        tbody.innerHTML='';
+        const querySnapshot = await getDocs(collection(db,'penawaran'));
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${formatTanggal(data.tanggal)}</td>
+                <td>${data.nomor}</td>
+                <td>${data.perusahaan}</td>
+                <td>${data.pekerjaan}</td>
+                <td>${data.nilai}</td>
+                <td>${data.keterangan}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-create" onclick="buatPenawaran(this)">Buat</button>
+                        <button class="btn-delete" onclick="hapusPenawaranFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    window.hapusPenawaranFirebase = async function(id){
+        if(confirm('Hapus data penawaran ini?')){
+            await deleteDoc(doc(db,'penawaran',id));
+            loadPenawaran();
+        }
+    }
+
+    /* =========================
+       LOGIKA PROYEK
+       ========================= */
+    window.tambahProyek = function(){
+        const tbody = document.getElementById('proyekBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="number" class="no" placeholder="No"></td>
+            <td><input type="text" class="perusahaan"></td>
+            <td><input type="text" class="pekerjaan"></td>
+            <td><input type="text" class="no_spk"></td>
+            <td><input type="number" class="nilai_pekerjaan"></td>
+            <td><input type="number" class="nilai_ppn"></td>
+            <td><input type="number" class="nilai_retensi"></td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanProyek(this)">Simpan</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    window.simpanProyek = async function(button){
+        const row = button.closest('tr');
+        const data = {
+            no: row.querySelector('.no').value,
+            perusahaan: row.querySelector('.perusahaan').value,
+            pekerjaan: row.querySelector('.pekerjaan').value,
+            no_spk: row.querySelector('.no_spk').value,
+            nilai_pekerjaan: parseFloat(row.querySelector('.nilai_pekerjaan').value) || 0,
+            nilai_ppn: parseFloat(row.querySelector('.nilai_ppn').value) || 0,
+            nilai_retensi: parseFloat(row.querySelector('.nilai_retensi').value) || 0
+        };
+        await addDoc(collection(db,'proyek'),data);
+        alert('Proyek berhasil disimpan');
+        loadProyek();
+        loadProgress();
+    }
+
+    async function loadProyek(){
+        const tbody = document.getElementById('proyekBody');
+        tbody.innerHTML='';
+        const querySnapshot = await getDocs(collection(db,'proyek'));
+
+        let totalPekerjaan = 0;
+        let totalPPN = 0;
+        let totalRetensi = 0;
+
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            totalPekerjaan += data.nilai_pekerjaan || 0;
+            totalPPN += data.nilai_ppn || 0;
+            totalRetensi += data.nilai_retensi || 0;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.no}</td>
+                <td>${data.perusahaan}</td>
+                <td>${data.pekerjaan}</td>
+                <td>${data.no_spk}</td>
+                <td>${formatRupiah(data.nilai_pekerjaan)}</td>
+                <td>${formatRupiah(data.nilai_ppn)}</td>
+                <td>${formatRupiah(data.nilai_retensi)}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-delete" onclick="hapusProyekFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        document.getElementById('totalNilaiPekerjaan').innerText = formatRupiah(totalPekerjaan);
+        document.getElementById('totalNilaiPPN').innerText = formatRupiah(totalPPN);
+        document.getElementById('totalNilaiRetensi').innerText = formatRupiah(totalRetensi);
+    }
+
+    window.hapusProyekFirebase = async function(id){
+        if(confirm('Hapus data proyek ini?')){
+            await deleteDoc(doc(db,'proyek',id));
+            loadProyek();
+        }
+    }
+
+    /* =========================
+       LOGIKA ARUS KAS & LAPORAN - SYNC 2 ARAH KE SHEET
+       ========================= */
+    window.tambahArusKas = function(){
+        const tbody = document.getElementById('arusKasBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <select class="keterangan">
+                    <option value="Modal">Modal</option>
+                    <option value="Opnaman">Opnaman</option>
+                    <option value="Pemborong">Pemborong</option>
+                    <option value="BOP">BOP</option>
+                </select>
+            </td>
+            <td><input type="date" class="tanggal"></td>
+            <td><input type="text" class="uraian"></td>
+            <td><input type="number" class="masuk" value="0"></td>
+            <td><input type="number" class="keluar" value="0"></td>
+            <td>-</td>
+            <td>
+                <div class="aksi-wrap">
+                    <button class="btn-save" onclick="simpanArusKas(this)">Simpan</button>
+                    <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    // 3.1 SIMPAN + KIRIM ID KE SHEET KOLOM G
+    window.simpanArusKas = async function(button){
+        const row = button.closest('tr');
+        const data = {
+            keterangan: row.querySelector('.keterangan').value,
+            tanggal: row.querySelector('.tanggal').value,
+            uraian: row.querySelector('.uraian').value,
+            masuk: parseFloat(row.querySelector('.masuk').value) || 0,
+            keluar: parseFloat(row.querySelector('.keluar').value) || 0
+        };
+
+        // 1. Simpan ke Firestore dulu, ambil ID-nya
+        const docRef = await addDoc(collection(db,'arus_kas'), data);
+        data.id = docRef.id; // ID unik dari Firestore
+
+        // 2. Kirim ke Sheet + ID
+        try {
+          await fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(data)
+          });
+          console.log('Data terkirim ke Sheet CIKANDE');
+        } catch (error) {
+          console.log('Gagal kirim ke Sheet:', error);
+        }
+
+        alert('Transaksi berhasil disimpan');
+        loadArusKas();
+    }
+
+    async function loadArusKas(){
+        const tbody = document.getElementById('arusKasBody');
+        tbody.innerHTML='';
+
+        const q = query(collection(db,'arus_kas'), orderBy('tanggal','asc'));
+        const querySnapshot = await getDocs(q);
+
+        let saldo = 0;
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+        let totalModal = 0;
+        let totalOpnaman = 0;
+        let totalPemborong = 0;
+        let totalBOP = 0;
+
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            saldo += (data.masuk - data.keluar);
+            totalMasuk += data.masuk;
+            totalKeluar += data.keluar;
+
+            if(data.keterangan === 'Modal') totalModal += data.masuk;
+            if(data.keterangan === 'Opnaman') totalOpnaman += data.masuk;
+            if(data.keterangan === 'Pemborong') totalPemborong += data.keluar;
+            if(data.keterangan === 'BOP') totalBOP += data.keluar;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.keterangan}</td>
+                <td>${formatTanggal(data.tanggal)}</td>
+                <td>${data.uraian}</td>
+                <td>${formatRupiah(data.masuk)}</td>
+                <td>${formatRupiah(data.keluar)}</td>
+                <td>${formatRupiah(saldo)}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-delete" onclick="hapusArusKasFirebase('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        document.getElementById('totalPemasukan').innerText = formatRupiah(totalMasuk);
+        document.getElementById('totalPengeluaran').innerText = formatRupiah(totalKeluar);
+        document.getElementById('totalModal').innerText = `Modal: ${formatRupiah(totalModal)}`;
+        document.getElementById('totalOpnaman').innerText = `Opnaman: ${formatRupiah(totalOpnaman)}`;
+        document.getElementById('totalPemborong').innerText = `Pemborong: ${formatRupiah(totalPemborong)}`;
+        document.getElementById('totalBOP').innerText = `BOP: ${formatRupiah(totalBOP)}`;
+    }
+
+    // 3.2 HAPUS FIRESTORE + KIRIM PERINTAH DELETE KE SHEET
+    window.hapusArusKasFirebase = async function(id){
+        if(confirm('Hapus transaksi ini?')){
+            // 1. Hapus dari Firestore
+            await deleteDoc(doc(db,'arus_kas',id));
+
+            // 2. Hapus dari Google Sheet
+            try {
+              await fetch(SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'delete', id: id })
+              });
+              console.log('Perintah hapus terkirim ke Sheet');
+            } catch (error) {
+              console.log('Gagal hapus di Sheet:', error);
+            }
+
+            loadArusKas();
+        }
+    }
+
+    async function loadLaporan(){
+        // Hitung total nilai proyek
+        const proyekSnap = await getDocs(collection(db,'proyek'));
+        let totalProyek = 0;
+        let totalPPN = 0;
+        let totalRetensi = 0;
+        proyekSnap.forEach(doc => {
+            totalProyek += parseFloat(doc.data().nilai_pekerjaan) || 0;
+            totalPPN += parseFloat(doc.data().nilai_ppn) || 0;
+            totalRetensi += parseFloat(doc.data().nilai_retensi) || 0;
+        });
+        document.getElementById('totalProyek').innerText = formatRupiah(totalProyek);
+        document.getElementById('totalPPN').innerText = `PPN: ${formatRupiah(totalPPN)}`;
+        document.getElementById('totalRetensi').innerText = `Retensi: ${formatRupiah(totalRetensi)}`;
+
+        // Load arus kas
+        loadArusKas();
+    }
+
+    // Load awal
+    loadInvoice();
+    loadPenawaran();
+    loadProyek();
+
+</script>
+
+</body>
+</html>
 
     window.hapusBaris = function(button){
         button.closest('tr').remove();
