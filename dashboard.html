@@ -63,6 +63,8 @@
             box-shadow:0 4px 12px rgba(31,120,209,0.25);
             min-height:140px;
         }
+     .summary-card.margin{ background:linear-gradient(135deg,#28a745,#1e7e34); }
+     .summary-card.danger{ background:linear-gradient(135deg,#dc3545,#a71d2a); }
      .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
      .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
      .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
@@ -86,21 +88,25 @@
      .total-row{ background:#f0f7ff; font-weight:700; }
      .total-row td{ color:#0f4c81; }
 
-     /* CSS KHUSUS PROGRESS */
+     /* CSS KHUSUS PROGRESS & PEMBORONG */
      .filter-bar{ display:flex; gap:15px; margin-bottom:20px; align-items:center; }
      .filter-bar select{ padding:12px; border:1px solid #ccc; border-radius:10px; min-width:250px; }
      .modal{ display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
-     .modal-content{ background:white; margin:5% auto; padding:30px; border-radius:20px; width:90%; max-width:600px; }
+     .modal-content{ background:white; margin:3% auto; padding:30px; border-radius:20px; width:90%; max-width:650px; max-height:90vh; overflow-y:auto; }
      .modal-content h3{ color:#0f4c81; margin-bottom:20px; }
      .form-group{ margin-bottom:15px; }
      .form-group label{ display:block; margin-bottom:5px; font-weight:500; color:#333; }
-     .form-group input,.form-group textarea{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
+     .form-group input,.form-group textarea,.form-group select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
+     .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:15px; }
      .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
      .btn-close{ background:#6c757d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
      .progress-bar{ width:100%; height:8px; background:#e0e0e0; border-radius:10px; overflow:hidden; }
      .progress-fill{ height:100%; background:linear-gradient(90deg,#1f78d1,#0f4c81); transition:0.3s; }
      .badge-success{ background:#28a745; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
      .badge-warning{ background:#ffc107; color:#333; padding:4px 8px; border-radius:6px; font-size:12px; }
+     .badge-danger{ background:#dc3545; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
+     .text-success{ color:#28a745; font-weight:600; }
+     .text-danger{ color:#dc3545; font-weight:600; }
 
         @media(max-width:1200px){
          .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
@@ -111,6 +117,7 @@
          .main{ margin-left:0; padding:20px; }
          .summary-box{ position:relative; top:auto; }
          .summary-box.progress-4{ grid-template-columns:1fr; }
+         .form-row{ grid-template-columns:1fr; }
         }
     </style>
 </head>
@@ -125,6 +132,7 @@
         <li><a onclick="showPage('penawaranPage',this)">💰 Penawaran Harga</a></li>
         <li><a onclick="showPage('proyekPage',this)">📋 Proyek</a></li>
         <li><a onclick="showPage('progressPage',this)">📊 Progress & Tagihan</a></li>
+        <li><a onclick="showPage('pemborongPage',this)">👷 Pemborong & Belanja</a></li>
         <li><a onclick="showPage('laporanPage',this)">📊 Laporan Keuangan</a></li>
     </ul>
 </div>
@@ -208,7 +216,7 @@
         </div>
     </div>
 
-    <!-- HALAMAN PROGRESS BARU -->
+    <!-- HALAMAN PROGRESS -->
     <div id="progressPage" class="hidden">
         <div class="summary-box progress-4">
             <div class="summary-card">
@@ -261,6 +269,60 @@
         </div>
     </div>
 
+    <!-- HALAMAN PEMBORONG & BELANJA BARU -->
+    <div id="pemborongPage" class="hidden">
+        <div class="summary-box progress-4">
+            <div class="summary-card">
+                <h3>Nilai Tagihan Owner</h3>
+                <p id="borongNilaiTagihan">Rp 0</p>
+                <div class="detail">Dari Progress Terpasang</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Biaya Borong</h3>
+                <p id="borongTotalBiaya">Rp 0</p>
+            </div>
+            <div class="summary-card margin" id="cardMargin">
+                <h3>Margin Kotor</h3>
+                <p id="borongMargin">Rp 0</p>
+                <div class="detail" id="borongPersenMargin">0%</div>
+            </div>
+            <div class="summary-card">
+                <h3>Sudah Bayar Borong</h3>
+                <p id="borongSudahBayar">Rp 0</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Pemborong & Belanja</h2>
+            <div class="filter-bar">
+                <label>Pilih Proyek:</label>
+                <select id="filterProyekBorong" onchange="loadPemborong()"><option value="">-- Pilih Proyek --</option></select>
+                <button class="btn-add" onclick="syncDariProgress()">🔄 Sync dari Progress</button>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Item Pekerjaan</th>
+                            <th>Qty Pasang</th>
+                            <th>Harga Owner</th>
+                            <th>Nilai Tagihan</th>
+                            <th>Qty Borong</th>
+                            <th>Harga Borong</th>
+                            <th>Biaya Borong</th>
+                            <th>Bayar Borong</th>
+                            <th>Margin</th>
+                            <th>%</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pemborongBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL UPDATE PROGRESS -->
     <div id="modalProgress" class="modal">
         <div class="modal-content">
@@ -285,6 +347,50 @@
             <div class="modal-actions">
                 <button class="btn-close" onclick="tutupModal()">Batal</button>
                 <button class="btn-save" onclick="simpanUpdateProgress()">Simpan Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL UPDATE PEMBORONG -->
+    <div id="modalPemborong" class="modal">
+        <div class="modal-content">
+            <h3>Update Borongan</h3>
+            <input type="hidden" id="editPemborongId">
+            <div class="form-group">
+                <label>Item Pekerjaan</label>
+                <input type="text" id="editBorongItem" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Qty Terpasang</label>
+                    <input type="text" id="editBorongQtyPasang" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Nilai Tagihan Owner</label>
+                    <input type="text" id="editBorongNilaiTagihan" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Qty Diborongkan</label>
+                    <input type="number" id="editQtyBorong" placeholder="Qty yang diborongkan">
+                </div>
+                <div class="form-group">
+                    <label>Harga Satuan Borong</label>
+                    <input type="number" id="editHargaBorong" placeholder="Harga per satuan">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Sudah Dibayar ke Pemborong</label>
+                <input type="number" id="editBayarBorong" placeholder="Total pembayaran ke pemborong">
+            </div>
+            <div class="form-group">
+                <label>Vendor/Supplier</label>
+                <input type="text" id="editVendor" placeholder="Nama pemborong/supplier">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-close" onclick="tutupModalBorong()">Batal</button>
+                <button class="btn-save" onclick="simpanUpdateBorong()">Simpan Update</button>
             </div>
         </div>
     </div>
@@ -341,7 +447,7 @@
 </div>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, updateDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyADV-EDV5k_C9wyxWX5mFFj4BVqOt5nmgs",
@@ -386,6 +492,7 @@
         document.getElementById('penawaranPage').classList.add('hidden');
         document.getElementById('proyekPage').classList.add('hidden');
         document.getElementById('progressPage').classList.add('hidden');
+        document.getElementById('pemborongPage').classList.add('hidden');
         document.getElementById('laporanPage').classList.add('hidden');
         document.getElementById(pageId).classList.remove('hidden');
         document.querySelectorAll('.sidebar a').forEach(a=>{ a.classList.remove('active'); });
@@ -394,6 +501,7 @@
         if(pageId === 'laporanPage') loadLaporan();
         if(pageId === 'proyekPage') loadProyek();
         if(pageId === 'progressPage') { loadProyekDropdown(); loadProgress(); }
+        if(pageId === 'pemborongPage') { loadProyekDropdownBorong(); loadPemborong(); }
     }
 
     window.hapusBaris = function(button){
@@ -684,8 +792,9 @@
             loadProyek();
         }
     }
-        /* =========================
-       TAMBAHAN: LOGIKA PROGRESS & TAGIHAN
+
+    /* =========================
+       LOGIKA PROGRESS & TAGIHAN
        ========================= */
     async function loadProyekDropdown(){
         const select = document.getElementById('filterProyek');
@@ -704,7 +813,7 @@
     window.tambahItemProgress = async function(){
         const proyekId = document.getElementById('filterProyek').value;
         if(!proyekId){ alert('Pilih proyek dulu'); return; }
-        
+
         const item = prompt('Nama Item Pekerjaan:');
         if(!item) return;
         const vol = parseFloat(prompt('Volume Kontrak:')) || 0;
@@ -729,7 +838,7 @@
         const proyekId = document.getElementById('filterProyek').value;
         const tbody = document.getElementById('progressBody');
         tbody.innerHTML = '';
-        
+
         if(!proyekId){
             updateSummaryProgress(0,0,0,0);
             return;
@@ -740,7 +849,7 @@
 
         const q = query(collection(db,'progress'), where('proyekId','==',proyekId));
         const querySnapshot = await getDocs(q);
-        
+
         let totalNilaiTerpasang = 0;
         let totalSudahDibayar = 0;
         let totalVolumeKontrak = 0;
@@ -758,7 +867,7 @@
             totalVolumeKontrak += data.volume_kontrak;
             totalQtyTerpasang += data.qty_terpasang;
 
-            const statusBadge = persenProgress == 100? '<span class="badge-success">Selesai</span>' : 
+            const statusBadge = persenProgress == 100? '<span class="badge-success">Selesai</span>' :
                                persenProgress > 0? '<span class="badge-warning">Proses</span>' : '';
 
             const row = document.createElement('tr');
@@ -798,10 +907,9 @@
     }
 
     window.bukaModalProgress = async function(id){
-        const docRef = doc(db,'progress',id);
-        const docSnap = await getDocs(query(collection(db,'progress'), where('__name__','==',id)));
-        docSnap.forEach((doc)=>{
-            const data = doc.data();
+        const docSnap = await getDoc(doc(db,'progress',id));
+        if(docSnap.exists()){
+            const data = docSnap.data();
             document.getElementById('editProgressId').value = id;
             document.getElementById('editItemPekerjaan').value = data.item_pekerjaan;
             document.getElementById('currentQty').innerText = data.qty_terpasang;
@@ -809,7 +917,7 @@
             document.getElementById('editQtyTerpasang').value = data.qty_terpasang;
             document.getElementById('editSudahDibayar').value = data.sudah_dibayar;
             document.getElementById('editCatatan').value = data.catatan || '';
-        });
+        }
         document.getElementById('modalProgress').style.display = 'block';
     }
 
@@ -829,7 +937,7 @@
             catatan: catatan,
             tgl_update: new Date().toISOString().split('T')[0]
         });
-        
+
         tutupModal();
         loadProgress();
         alert('Progress berhasil diupdate');
@@ -839,6 +947,194 @@
         if(confirm('Hapus item pekerjaan ini?')){
             await deleteDoc(doc(db,'progress',id));
             loadProgress();
+        }
+    }
+    /* =========================
+       LOGIKA PEMBORONG & BELANJA BARU
+       ========================= */
+    async function loadProyekDropdownBorong(){
+        const select = document.getElementById('filterProyekBorong');
+        select.innerHTML = '<option value="">-- Pilih Proyek --</option>';
+        const querySnapshot = await getDocs(collection(db,'proyek'));
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            const option = document.createElement('option');
+            option.value = docSnap.id;
+            option.textContent = `${data.perusahaan} - ${data.pekerjaan}`;
+            select.appendChild(option);
+        });
+    }
+
+    window.syncDariProgress = async function(){
+        const proyekId = document.getElementById('filterProyekBorong').value;
+        if(!proyekId){ alert('Pilih proyek dulu'); return; }
+
+        // Ambil semua item dari progress
+        const qProgress = query(collection(db,'progress'), where('proyekId','==',proyekId));
+        const progressSnap = await getDocs(qProgress);
+
+        // Cek data pemborong yang udah ada
+        const qBorong = query(collection(db,'pemborong'), where('proyekId','==',proyekId));
+        const borongSnap = await getDocs(qBorong);
+        const existingProgressIds = borongSnap.docs.map(d => d.data().progressId);
+
+        let countAdd = 0;
+        for(const docSnap of progressSnap.docs){
+            const data = docSnap.data();
+            // Kalau belum ada di pemborong, tambahin
+            if(!existingProgressIds.includes(docSnap.id)){
+                await addDoc(collection(db,'pemborong'), {
+                    proyekId: proyekId,
+                    progressId: docSnap.id,
+                    item_pekerjaan: data.item_pekerjaan,
+                    volume_kontrak: data.volume_kontrak,
+                    satuan: data.satuan,
+                    qty_terpasang: data.qty_terpasang,
+                    harga_satuan_owner: data.harga_satuan,
+                    nilai_tagihan: data.qty_terpasang * data.harga_satuan,
+
+                    // Field yang diinput manual
+                    qty_diborong: 0,
+                    harga_satuan_borong: 0,
+                    sudah_bayar_borong: 0,
+                    vendor: '',
+                    tgl_update: new Date().toISOString().split('T')[0]
+                });
+                countAdd++;
+            } else {
+                // Kalau udah ada, update qty_terpasang & nilai_tagihan aja
+                const borongDoc = borongSnap.docs.find(d => d.data().progressId === docSnap.id);
+                if(borongDoc){
+                    await updateDoc(doc(db,'pemborong',borongDoc.id), {
+                        qty_terpasang: data.qty_terpasang,
+                        nilai_tagihan: data.qty_terpasang * data.harga_satuan,
+                        tgl_update: new Date().toISOString().split('T')[0]
+                    });
+                }
+            }
+        }
+        alert(`Sync selesai. ${countAdd} item baru ditambahkan, sisanya diupdate.`);
+        loadPemborong();
+    }
+
+    window.loadPemborong = async function(){
+        const proyekId = document.getElementById('filterProyekBorong').value;
+        const tbody = document.getElementById('pemborongBody');
+        tbody.innerHTML = '';
+
+        if(!proyekId){
+            updateSummaryBorong(0,0,0,0);
+            return;
+        }
+
+        const q = query(collection(db,'pemborong'), where('proyekId','==',proyekId));
+        const querySnapshot = await getDocs(q);
+
+        let totalNilaiTagihan = 0;
+        let totalBiayaBorong = 0;
+        let totalBayarBorong = 0;
+        let no = 1;
+
+        querySnapshot.forEach((docSnap)=>{
+            const data = docSnap.data();
+            const biayaBorong = data.qty_diborong * data.harga_satuan_borong;
+            const margin = data.nilai_tagihan - biayaBorong;
+            const persenMargin = data.nilai_tagihan > 0? (margin / data.nilai_tagihan * 100).toFixed(1) : 0;
+
+            totalNilaiTagihan += data.nilai_tagihan;
+            totalBiayaBorong += biayaBorong;
+            totalBayarBorong += data.sudah_bayar_borong;
+
+            const marginClass = persenMargin >= 20? 'text-success' : persenMargin >= 10? 'text-warning' : 'text-danger';
+            const badgeMargin = persenMargin >= 20? '<span class="badge-success">Bagus</span>' :
+                               persenMargin >= 10? '<span class="badge-warning">Tipis</span>' :
+                               '<span class="badge-danger">Rugi</span>';
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${no++}</td>
+                <td>${data.item_pekerjaan}</td>
+                <td>${data.qty_terpasang} ${data.satuan}</td>
+                <td>${formatRupiah(data.harga_satuan_owner)}</td>
+                <td>${formatRupiah(data.nilai_tagihan)}</td>
+                <td>${data.qty_diborong} ${data.satuan}</td>
+                <td>${formatRupiah(data.harga_satuan_borong)}</td>
+                <td>${formatRupiah(biayaBorong)}</td>
+                <td>${formatRupiah(data.sudah_bayar_borong)}</td>
+                <td class="${marginClass}">${formatRupiah(margin)}</td>
+                <td class="${marginClass}">${persenMargin}% ${badgeMargin}</td>
+                <td>
+                    <div class="aksi-wrap">
+                        <button class="btn-edit" onclick="bukaModalBorong('${docSnap.id}')">Update</button>
+                        <button class="btn-delete" onclick="hapusBorong('${docSnap.id}')">Hapus</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        updateSummaryBorong(totalNilaiTagihan, totalBiayaBorong, totalNilaiTagihan - totalBiayaBorong, totalBayarBorong);
+    }
+
+    function updateSummaryBorong(nilaiTagihan, biayaBorong, margin, sudahBayar){
+        document.getElementById('borongNilaiTagihan').innerText = formatRupiah(nilaiTagihan);
+        document.getElementById('borongTotalBiaya').innerText = formatRupiah(biayaBorong);
+        document.getElementById('borongMargin').innerText = formatRupiah(margin);
+        document.getElementById('borongSudahBayar').innerText = formatRupiah(sudahBayar);
+
+        const persenMargin = nilaiTagihan > 0? (margin / nilaiTagihan * 100).toFixed(1) : 0;
+        document.getElementById('borongPersenMargin').innerText = persenMargin + '%';
+
+        const cardMargin = document.getElementById('cardMargin');
+        cardMargin.classList.remove('margin','danger');
+        if(persenMargin >= 20) cardMargin.classList.add('margin');
+        else if(persenMargin < 10) cardMargin.classList.add('danger');
+    }
+
+    window.bukaModalBorong = async function(id){
+        const docSnap = await getDoc(doc(db,'pemborong',id));
+        if(docSnap.exists()){
+            const data = docSnap.data();
+            document.getElementById('editPemborongId').value = id;
+            document.getElementById('editBorongItem').value = data.item_pekerjaan;
+            document.getElementById('editBorongQtyPasang').value = `${data.qty_terpasang} ${data.satuan}`;
+            document.getElementById('editBorongNilaiTagihan').value = formatRupiah(data.nilai_tagihan);
+            document.getElementById('editQtyBorong').value = data.qty_diborong;
+            document.getElementById('editHargaBorong').value = data.harga_satuan_borong;
+            document.getElementById('editBayarBorong').value = data.sudah_bayar_borong;
+            document.getElementById('editVendor').value = data.vendor || '';
+        }
+        document.getElementById('modalPemborong').style.display = 'block';
+    }
+
+    window.tutupModalBorong = function(){
+        document.getElementById('modalPemborong').style.display = 'none';
+    }
+
+    window.simpanUpdateBorong = async function(){
+        const id = document.getElementById('editPemborongId').value;
+        const qtyBorong = parseFloat(document.getElementById('editQtyBorong').value) || 0;
+        const hargaBorong = parseFloat(document.getElementById('editHargaBorong').value) || 0;
+        const bayarBorong = parseFloat(document.getElementById('editBayarBorong').value) || 0;
+        const vendor = document.getElementById('editVendor').value;
+
+        await updateDoc(doc(db,'pemborong',id), {
+            qty_diborong: qtyBorong,
+            harga_satuan_borong: hargaBorong,
+            sudah_bayar_borong: bayarBorong,
+            vendor: vendor,
+            tgl_update: new Date().toISOString().split('T')[0]
+        });
+
+        tutupModalBorong();
+        loadPemborong();
+        alert('Data borongan berhasil diupdate');
+    }
+
+    window.hapusBorong = async function(id){
+        if(confirm('Hapus data borongan ini?')){
+            await deleteDoc(doc(db,'pemborong',id));
+            loadPemborong();
         }
     }
 
@@ -996,9 +1292,13 @@
 
     // Tutup modal kalau klik di luar
     window.onclick = function(event){
-        const modal = document.getElementById('modalProgress');
-        if(event.target == modal){
+        const modalProgress = document.getElementById('modalProgress');
+        const modalBorong = document.getElementById('modalPemborong');
+        if(event.target == modalProgress){
             tutupModal();
+        }
+        if(event.target == modalBorong){
+            tutupModalBorong();
         }
     }
 
