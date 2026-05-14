@@ -95,6 +95,48 @@
           .main{ margin-left:0; padding:20px; }
           .summary-box{ position:relative; top:auto; }
         }
+        .progress-bar{
+    width:100%;
+    height:18px;
+    background:#dbe8f5;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#00c853,#64dd17);
+    text-align:center;
+    color:white;
+    font-size:11px;
+    font-weight:600;
+}
+
+.progress-card{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.progress-info{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.progress-info h3{
+    color:#0f4c81;
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.progress-info p{
+    font-size:24px;
+    font-weight:700;
+    color:#1f78d1;
+}
     </style>
 </head>
 
@@ -108,6 +150,7 @@
         <li><a onclick="showPage('penawaranPage',this)">💰 Penawaran Harga</a></li>
         <li><a onclick="showPage('proyekPage',this)">📋 Proyek</a></li>
         <li><a onclick="showPage('laporanPage',this)">📊 Laporan Keuangan</a></li>
+        <li><a onclick="showPage('progressPage',this)">📈 Progress Pekerjaan</a></li>
     </ul>
 </div>
 
@@ -239,6 +282,56 @@
             </div>
         </div>
     </div>
+    <div id="progressPage" class="hidden">
+
+    <div class="progress-card">
+
+        <div class="progress-info">
+            <h3>Total Progress Fisik</h3>
+            <p id="totalFisik">0%</p>
+        </div>
+
+        <div class="progress-info">
+            <h3>Total Pembayaran</h3>
+            <p id="totalBayar">Rp 0</p>
+        </div>
+
+        <div class="progress-info">
+            <h3>Sisa Pembayaran</h3>
+            <p id="sisaBayar">Rp 0</p>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Data Progress Pekerjaan</h2>
+
+        <button class="btn-add" onclick="tambahProgress()">
+            + Tambah Progress
+        </button>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Nama Pekerjaan</th>
+                    <th>Volume</th>
+                    <th>Terpasang</th>
+                    <th>Satuan</th>
+                    <th>Nilai Pembayaran</th>
+                    <th>Progress</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody id="progressBody"></tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
 <script type="module">
@@ -283,17 +376,26 @@
         window.location.href='login.html';
     }
 
-    window.showPage = function(pageId,el){
-        document.getElementById('invoicePage').classList.add('hidden');
-        document.getElementById('penawaranPage').classList.add('hidden');
-        document.getElementById('proyekPage').classList.add('hidden');
-        document.getElementById('laporanPage').classList.add('hidden');
-        document.getElementById(pageId).classList.remove('hidden');
-        document.querySelectorAll('.sidebar a').forEach(a=>{ a.classList.remove('active'); });
-        el.classList.add('active');
+window.showPage = function(pageId,el){
 
-        if(pageId === 'laporanPage') loadLaporan();
-        if(pageId === 'proyekPage') loadProyek();
+    document.getElementById('invoicePage').classList.add('hidden');
+    document.getElementById('penawaranPage').classList.add('hidden');
+    document.getElementById('proyekPage').classList.add('hidden');
+    document.getElementById('laporanPage').classList.add('hidden');
+    document.getElementById('progressPage').classList.add('hidden');
+
+    document.getElementById(pageId).classList.remove('hidden');
+
+    document.querySelectorAll('.sidebar a').forEach(a=>{
+        a.classList.remove('active');
+    });
+
+    el.classList.add('active');
+
+    if(pageId === 'laporanPage') loadLaporan();
+    if(pageId === 'proyekPage') loadProyek();
+    if(pageId === 'progressPage') loadProgress();
+}
     }
 
     window.hapusBaris = function(button){
@@ -311,7 +413,208 @@
         if(workbook.worksheets.length === 0) throw new Error(`File ${fileName} rusak. Upload ulang.`);
         return workbook.worksheets[0];
     }
+/* =========================
+LOGIKA PROGRESS PEKERJAAN
+========================= */
 
+window.tambahProgress = function(){
+
+    const tbody = document.getElementById('progressBody');
+
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+        <td><input type="date" class="tanggal"></td>
+
+        <td><input type="text" class="nama_pekerjaan"></td>
+
+        <td><input type="number" class="volume"></td>
+
+        <td><input type="number" class="terpasang"></td>
+
+        <td><input type="text" class="satuan"></td>
+
+        <td><input type="number" class="pembayaran"></td>
+
+        <td>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:0%">0%</div>
+            </div>
+        </td>
+
+        <td>
+            <div class="aksi-wrap">
+
+                <button class="btn-save"
+                    onclick="simpanProgress(this)">
+                    Simpan
+                </button>
+
+                <button class="btn-delete"
+                    onclick="hapusBaris(this)">
+                    Hapus
+                </button>
+
+            </div>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+
+    const volume = row.querySelector('.volume');
+    const terpasang = row.querySelector('.terpasang');
+    const progressFill = row.querySelector('.progress-fill');
+
+    function hitungProgress(){
+
+        const v = parseFloat(volume.value) || 0;
+        const t = parseFloat(terpasang.value) || 0;
+
+        let persen = 0;
+
+        if(v > 0){
+            persen = Math.round((t / v) * 100);
+        }
+
+        progressFill.style.width = persen + '%';
+        progressFill.innerText = persen + '%';
+    }
+
+    volume.addEventListener('input', hitungProgress);
+    terpasang.addEventListener('input', hitungProgress);
+}
+
+window.simpanProgress = async function(button){
+
+    const row = button.closest('tr');
+
+    const volume =
+        parseFloat(row.querySelector('.volume').value) || 0;
+
+    const terpasang =
+        parseFloat(row.querySelector('.terpasang').value) || 0;
+
+    let progress = 0;
+
+    if(volume > 0){
+        progress = Math.round((terpasang / volume) * 100);
+    }
+
+    const data = {
+
+        tanggal: row.querySelector('.tanggal').value,
+
+        nama_pekerjaan:
+            row.querySelector('.nama_pekerjaan').value,
+
+        volume: volume,
+
+        terpasang: terpasang,
+
+        satuan: row.querySelector('.satuan').value,
+
+        pembayaran:
+            parseFloat(row.querySelector('.pembayaran').value) || 0,
+
+        progress: progress
+    };
+
+    await addDoc(collection(db,'progress_pekerjaan'), data);
+
+    alert('Progress berhasil disimpan');
+
+    loadProgress();
+}
+
+async function loadProgress(){
+
+    const tbody = document.getElementById('progressBody');
+
+    tbody.innerHTML = '';
+
+    const querySnapshot =
+        await getDocs(collection(db,'progress_pekerjaan'));
+
+    let totalBayar = 0;
+    let totalProgress = 0;
+    let jumlahData = 0;
+
+    querySnapshot.forEach((docSnap)=>{
+
+        const data = docSnap.data();
+
+        totalBayar += data.pembayaran || 0;
+        totalProgress += data.progress || 0;
+        jumlahData++;
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+
+            <td>${formatTanggal(data.tanggal)}</td>
+
+            <td>${data.nama_pekerjaan}</td>
+
+            <td>${data.volume}</td>
+
+            <td>${data.terpasang}</td>
+
+            <td>${data.satuan}</td>
+
+            <td>${formatRupiah(data.pembayaran)}</td>
+
+            <td>
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                        style="width:${data.progress}%">
+
+                        ${data.progress}%
+
+                    </div>
+
+                </div>
+            </td>
+
+            <td>
+
+                <button class="btn-delete"
+                    onclick="hapusProgressFirebase('${docSnap.id}')">
+
+                    Hapus
+
+                </button>
+
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    const rataProgress =
+        jumlahData > 0
+        ? Math.round(totalProgress / jumlahData)
+        : 0;
+
+    document.getElementById('totalFisik').innerText =
+        rataProgress + '%';
+
+    document.getElementById('totalBayar').innerText =
+        formatRupiah(totalBayar);
+
+    document.getElementById('sisaBayar').innerText =
+        formatRupiah(0);
+}
+
+window.hapusProgressFirebase = async function(id){
+
+    if(confirm('Hapus progress ini?')){
+
+        await deleteDoc(doc(db,'progress_pekerjaan',id));
+
+        loadProgress();
+    }
+}
     /* =========================
        LOGIKA INVOICE
        ========================= */
@@ -538,6 +841,7 @@
         await addDoc(collection(db,'proyek'),data);
         alert('Proyek berhasil disimpan');
         loadProyek();
+        loadProgress();
     }
 
     async function loadProyek(){
