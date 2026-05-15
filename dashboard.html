@@ -27,7 +27,7 @@
     .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
     .topbar h1{ color:#0f4c81; font-size:30px; }
     .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
-    .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0.08); margin-bottom:30px; }
+    .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
     .card h2{ margin-bottom:20px; color:#0f4c81; }
     .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
 
@@ -467,49 +467,6 @@
                     </thead>
                     <tbody id="arusKasBody"></tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL UPDATE PEMBORONG -->
-    <div id="modalPemborong" class="modal">
-        <div class="modal-content">
-            <h3>Update Borongan</h3>
-            <input type="hidden" id="editPemborongId">
-            <div class="form-group">
-                <label>Item Pekerjaan</label>
-                <input type="text" id="editBorongItem" readonly>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Qty Terpasang</label>
-                    <input type="text" id="editBorongQtyPasang" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Nilai Tagihan Owner</label>
-                    <input type="text" id="editBorongNilaiTagihan" readonly>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Qty Diborongkan</label>
-                    <input type="number" id="editQtyBorong" placeholder="Qty yang diborongkan">
-                </div>
-                <div class="form-group">
-                    <label>Harga Satuan Borong</label>
-                    <input type="number" id="editHargaBorong" placeholder="Harga per satuan">
-                </div>
-            <div class="form-group">
-                <label>Sudah Dibayar ke Pemborong</label>
-                <input type="number" id="editBayarBorong" placeholder="Total pembayaran ke pemborong">
-            </div>
-            <div class="form-group">
-                <label>Vendor/Supplier</label>
-                <input type="text" id="editVendor" placeholder="Nama pemborong/supplier">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-close" onclick="tutupModalBorong()">Batal</button>
-                <button class="btn-save" onclick="simpanUpdateBorong()">Simpan Update</button>
             </div>
         </div>
     </div>
