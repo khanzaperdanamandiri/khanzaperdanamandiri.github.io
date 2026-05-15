@@ -1151,13 +1151,13 @@
 
         querySnapshot.forEach((docSnap)=>{
             const data = docSnap.data();
-            const biayaBorong = data.qty_diborong * data.harga_satuan_borong;
-            const margin = data.nilai_tagihan - biayaBorong;
+            const biayaBorong = (data.qty_diborong || 0) * (data.harga_satuan_borong || 0);
+            const margin = (data.nilai_tagihan || 0) - biayaBorong;
             const persenMargin = data.nilai_tagihan > 0? (margin / data.nilai_tagihan * 100).toFixed(1) : 0;
 
-            totalNilaiTagihan += data.nilai_tagihan;
+            totalNilaiTagihan += data.nilai_tagihan || 0;
             totalBiayaBorong += biayaBorong;
-            totalBayarBorong += data.sudah_bayar_borong;
+            totalBayarBorong += data.sudah_bayar_borong || 0;
 
             const marginClass = persenMargin >= 20? 'text-success' : persenMargin >= 10? 'text-warning' : 'text-danger';
             const badgeMargin = persenMargin >= 20? '<span class="badge-success">Bagus</span>' :
@@ -1168,10 +1168,10 @@
             row.innerHTML = `
                 <td>${no++}</td>
                 <td>${data.item_pekerjaan}</td>
-                <td>${data.qty_terpasang} ${data.satuan}</td>
+                <td>${data.qty_terpasang || 0} ${data.satuan || ''}</td>
                 <td>${formatRupiah(data.harga_satuan_owner)}</td>
                 <td>${formatRupiah(data.nilai_tagihan)}</td>
-                <td>${data.qty_diborong} ${data.satuan}</td>
+                <td>${data.qty_diborong || 0} ${data.satuan || ''}</td>
                 <td>${formatRupiah(data.harga_satuan_borong)}</td>
                 <td>${formatRupiah(biayaBorong)}</td>
                 <td>${formatRupiah(data.sudah_bayar_borong)}</td>
@@ -1211,11 +1211,11 @@
             const data = docSnap.data();
             document.getElementById('editPemborongId').value = id;
             document.getElementById('editBorongItem').value = data.item_pekerjaan;
-            document.getElementById('editBorongQtyPasang').value = `${data.qty_terpasang} ${data.satuan}`;
+            document.getElementById('editBorongQtyPasang').value = `${data.qty_terpasang || 0} ${data.satuan || ''}`;
             document.getElementById('editBorongNilaiTagihan').value = formatRupiah(data.nilai_tagihan);
-            document.getElementById('editQtyBorong').value = data.qty_diborong;
-            document.getElementById('editHargaBorong').value = data.harga_satuan_borong;
-            document.getElementById('editBayarBorong').value = data.sudah_bayar_borong;
+            document.getElementById('editQtyBorong').value = data.qty_diborong || 0;
+            document.getElementById('editHargaBorong').value = data.harga_satuan_borong || 0;
+            document.getElementById('editBayarBorong').value = data.sudah_bayar_borong || 0;
             document.getElementById('editVendor').value = data.vendor || '';
         }
         document.getElementById('modalPemborong').style.display = 'block';
