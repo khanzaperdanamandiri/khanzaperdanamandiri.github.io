@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
     
-    <!-- Favicon pakai logo.png yang udah ada di GitHub -->
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="apple-touch-icon" href="/logo.png">
 
@@ -17,33 +16,34 @@
     <style>
         *{ margin:0; padding:0; box-sizing:border-box; }
         body{ font-family:'Poppins',sans-serif; background:#eef3f9; }
-     .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; z-index:100; }
-     .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
-     .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
-     .sidebar ul{ list-style:none; }
-     .sidebar ul li{ margin-bottom:15px; }
-     .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
-     .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,255,0.15); }
-     .main{ margin-left:270px; padding:35px; }
-     .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-     .topbar h1{ color:#0f4c81; font-size:30px; }
-     .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
-     .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
-     .card h2{ margin-bottom:20px; color:#0f4c81; }
-     .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
+    .sidebar{ width:270px; height:100vh; position:fixed; left:0; top:0; background:linear-gradient(180deg,#0f4c81,#1f78d1); padding:30px 20px; color:white; overflow:auto; z-index:100; }
+    .sidebar img{ width:90px; display:block; margin:auto; margin-bottom:20px; }
+    .sidebar h2{ text-align:center; margin-bottom:40px; font-size:24px; }
+    .sidebar ul{ list-style:none; }
+    .sidebar ul li{ margin-bottom:15px; }
+    .sidebar ul li a{ text-decoration:none; color:white; display:block; padding:14px 18px; border-radius:12px; transition:0.3s; font-weight:500; cursor:pointer; }
+    .sidebar ul li a:hover,.sidebar ul li a.active{ background:rgba(255,255,0.15); }
+    .main{ margin-left:270px; padding:35px; }
+    .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+    .topbar h1{ color:#0f4c81; font-size:30px; }
+    .logout-btn{ background:#ff2e2e; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .card{ background:white; padding:30px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.08); margin-bottom:30px; }
+    .card h2{ margin-bottom:20px; color:#0f4c81; }
+    .btn-add{ background:#1f78d1; color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:20px; }
 
         table{ width:100%; border-collapse:separate; border-spacing:0; }
         table th, table td{ border:1px solid #ddd; padding:12px; }
         table th{ background:#0f4c81; color:white; }
         table input, table select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-     .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
-     .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .btn-edit{ background:#ff9800; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
-     .hidden{ display:none; }
+    .aksi-wrap{ display:flex; flex-direction:column; gap:8px; }
+    .btn-save{ background:#1f78d1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+    .btn-delete{ background:red; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+    .btn-create{ background:green; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+    .btn-edit{ background:#ff9800; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+    .btn-history{ background:#6f42c1; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; }
+    .hidden{ display:none; }
 
-     .summary-box{
+    .summary-box{
             display:grid;
             grid-template-columns:repeat(3, 1fr);
             gap:20px;
@@ -54,8 +54,8 @@
             background:#eef3f9;
             padding-bottom: 10px;
         }
-     .summary-box.progress-4{ grid-template-columns:repeat(4, 1fr); }
-     .summary-card{
+    .summary-box.progress-4{ grid-template-columns:repeat(4, 1fr); }
+    .summary-card{
             background:linear-gradient(135deg,#1f78d1,#0f4c81);
             color:white;
             padding:22px 25px;
@@ -63,20 +63,20 @@
             box-shadow:0 4px 12px rgba(31,120,209,0.25);
             min-height:140px;
         }
-     .summary-card.margin{ background:linear-gradient(135deg,#28a745,#1e7e34); }
-     .summary-card.danger{ background:linear-gradient(135deg,#dc3545,#a71d2a); }
-     .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
-     .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
-     .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
-     .summary-card.detail div{ margin-bottom:2px; }
+    .summary-card.margin{ background:linear-gradient(135deg,#28a745,#1e7e34); }
+    .summary-card.danger{ background:linear-gradient(135deg,#dc3545,#a71d2a); }
+    .summary-card h3{ font-size:15px; font-weight:400; margin-bottom:12px; opacity:0.95; }
+    .summary-card p{ font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
+    .summary-card.detail{ font-size:13px; opacity:0.9; line-height:1.7; }
+    .summary-card.detail div{ margin-bottom:2px; }
 
-     .table-scroll{
+    .table-scroll{
             max-height: 500px;
             overflow-y: auto;
             border-radius: 10px;
             border: 1px solid #ddd;
         }
-     .table-scroll thead th{
+    .table-scroll thead th{
             position: sticky;
             top: 0;
             background:#0f4c81;
@@ -84,40 +84,48 @@
             z-index: 10;
             border:1px solid #0a3a62;
         }
-     .table-scroll tbody td{ background:white; }
-     .total-row{ background:#f0f7ff; font-weight:700; }
-     .total-row td{ color:#0f4c81; }
+    .table-scroll tbody td{ background:white; }
+    .total-row{ background:#f0f7ff; font-weight:700; }
+    .total-row td{ color:#0f4c81; }
 
-     /* CSS KHUSUS PROGRESS & PEMBORONG */
-     .filter-bar{ display:flex; gap:15px; margin-bottom:20px; align-items:center; }
-     .filter-bar select{ padding:12px; border:1px solid #ccc; border-radius:10px; min-width:250px; }
-     .modal{ display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
-     .modal-content{ background:white; margin:3% auto; padding:30px; border-radius:20px; width:90%; max-width:650px; max-height:90vh; overflow-y:auto; }
-     .modal-content h3{ color:#0f4c81; margin-bottom:20px; }
-     .form-group{ margin-bottom:15px; }
-     .form-group label{ display:block; margin-bottom:5px; font-weight:500; color:#333; }
-     .form-group input,.form-group textarea,.form-group select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-     .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:15px; }
-     .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
-     .btn-close{ background:#6c757d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
-     .progress-bar{ width:100%; height:8px; background:#e0e0e0; border-radius:10px; overflow:hidden; }
-     .progress-fill{ height:100%; background:linear-gradient(90deg,#1f78d1,#0f4c81); transition:0.3s; }
-     .badge-success{ background:#28a745; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
-     .badge-warning{ background:#ffc107; color:#333; padding:4px 8px; border-radius:6px; font-size:12px; }
-     .badge-danger{ background:#dc3545; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
-     .text-success{ color:#28a745; font-weight:600; }
-     .text-danger{ color:#dc3545; font-weight:600; }
+    .filter-bar{ display:flex; gap:15px; margin-bottom:20px; align-items:center; flex-wrap:wrap; }
+    .filter-bar select{ padding:12px; border:1px solid #ccc; border-radius:10px; min-width:250px; }
+    .modal{ display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
+    .modal-content{ background:white; margin:3% auto; padding:30px; border-radius:20px; width:90%; max-width:650px; max-height:90vh; overflow-y:auto; }
+    .modal-content h3{ color:#0f4c81; margin-bottom:20px; }
+    .form-group{ margin-bottom:15px; }
+    .form-group label{ display:block; margin-bottom:5px; font-weight:500; color:#333; }
+    .form-group input,.form-group textarea,.form-group select{ width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
+    .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+    .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+    .btn-close{ background:#6c757d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
+    .progress-bar{ width:100%; height:8px; background:#e0e0e0; border-radius:10px; overflow:hidden; }
+    .progress-fill{ height:100%; background:linear-gradient(90deg,#1f78d1,#0f4c81); transition:0.3s; }
+    .badge-success{ background:#28a745; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
+    .badge-warning{ background:#ffc107; color:#333; padding:4px 8px; border-radius:6px; font-size:12px; }
+    .badge-danger{ background:#dc3545; color:white; padding:4px 8px; border-radius:6px; font-size:12px; }
+    .text-success{ color:#28a745; font-weight:600; }
+    .text-danger{ color:#dc3545; font-weight:600; }
+    .text-warning{ color:#ff9800; font-weight:600; }
+    .history-list{ max-height:400px; overflow-y:auto; }
+    .history-item{ background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:10px; border-left:4px solid #1f78d1; }
+    .history-item-header{ display:flex; justify-content:space-between; margin-bottom:8px; }
+    .history-item-date{ font-weight:600; color:#0f4c81; }
+    .history-item-actions{ display:flex; gap:8px; }
+    .btn-mini{ padding:5px 10px; font-size:12px; border:none; border-radius:5px; cursor:pointer; }
+    .btn-mini-edit{ background:#ff9800; color:white; }
+    .btn-mini-delete{ background:#dc3545; color:white; }
 
         @media(max-width:1200px){
-         .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
-         .summary-box.progress-4{ grid-template-columns:repeat(2, 1fr); }
+        .summary-box{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+        .summary-box.progress-4{ grid-template-columns:repeat(2, 1fr); }
         }
         @media(max-width:900px){
-         .sidebar{ position:relative; width:100%; height:auto; }
-         .main{ margin-left:0; padding:20px; }
-         .summary-box{ position:relative; top:auto; }
-         .summary-box.progress-4{ grid-template-columns:1fr; }
-         .form-row{ grid-template-columns:1fr; }
+        .sidebar{ position:relative; width:100%; height:auto; }
+        .main{ margin-left:0; padding:20px; }
+        .summary-box{ position:relative; top:auto; }
+        .summary-box.progress-4{ grid-template-columns:1fr; }
+        .form-row{ grid-template-columns:1fr; }
         }
     </style>
 </head>
@@ -254,11 +262,11 @@
                             <th>Item Pekerjaan</th>
                             <th>Vol Kontrak</th>
                             <th>Satuan</th>
-                            <th>Qty Terpasang</th>
+                            <th>Total Qty</th>
                             <th>% Progress</th>
                             <th>Harga Satuan</th>
                             <th>Nilai Terpasang</th>
-                            <th>Sudah Dibayar</th>
+                            <th>Total Dibayar</th>
                             <th>Sisa Bayar</th>
                             <th>Aksi</th>
                         </tr>
@@ -269,7 +277,7 @@
         </div>
     </div>
 
-    <!-- HALAMAN PEMBORONG & BELANJA BARU -->
+    <!-- HALAMAN PEMBORONG & BELANJA -->
     <div id="pemborongPage" class="hidden">
         <div class="summary-box progress-4">
             <div class="summary-card">
@@ -326,19 +334,25 @@
     <!-- MODAL UPDATE PROGRESS -->
     <div id="modalProgress" class="modal">
         <div class="modal-content">
-            <h3>Update Progress</h3>
+            <h3 id="modalProgressTitle">Tambah Update Progress</h3>
             <input type="hidden" id="editProgressId">
+            <input type="hidden" id="editHistoryIndex">
             <div class="form-group">
                 <label>Item Pekerjaan</label>
                 <input type="text" id="editItemPekerjaan" readonly>
             </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tanggal Update</label>
+                    <input type="date" id="editTglUpdate">
+                </div>
+                <div class="form-group">
+                    <label>Qty Update Kali Ini</label>
+                    <input type="number" id="editQtyUpdate" placeholder="Qty yang dipasang">
+                </div>
             <div class="form-group">
-                <label>Qty Terpasang Saat Ini: <span id="currentQty">0</span></label>
-                <input type="number" id="editQtyTerpasang" placeholder="Update qty terpasang">
-            </div>
-            <div class="form-group">
-                <label>Pembayaran Masuk Saat Ini: <span id="currentBayar">Rp 0</span></label>
-                <input type="number" id="editSudahDibayar" placeholder="Update total pembayaran">
+                <label>Pembayaran Update Kali Ini</label>
+                <input type="number" id="editBayarUpdate" placeholder="Pembayaran masuk">
             </div>
             <div class="form-group">
                 <label>Catatan Update</label>
@@ -347,6 +361,19 @@
             <div class="modal-actions">
                 <button class="btn-close" onclick="tutupModal()">Batal</button>
                 <button class="btn-save" onclick="simpanUpdateProgress()">Simpan Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIHAT RIWAYAT -->
+    <div id="modalHistory" class="modal">
+        <div class="modal-content">
+            <h3>Riwayat Update: <span id="historyItemName"></span></h3>
+            <input type="hidden" id="historyProgressId">
+            <div class="history-list" id="historyList"></div>
+            <div class="modal-actions">
+                <button class="btn-close" onclick="tutupModalHistory()">Tutup</button>
+                <button class="btn-add" onclick="tambahUpdateDariHistory()">+ Tambah Update Baru</button>
             </div>
         </div>
     </div>
@@ -369,7 +396,6 @@
                     <label>Nilai Tagihan Owner</label>
                     <input type="text" id="editBorongNilaiTagihan" readonly>
                 </div>
-            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Qty Diborongkan</label>
@@ -412,7 +438,6 @@
                     <div id="totalModal">Modal: Rp 0</div>
                     <div id="totalOpnaman">Opnaman: Rp 0</div>
                 </div>
-            </div>
             <div class="summary-card">
                 <h3>Total Pengeluaran</h3>
                 <p id="totalPengeluaran">Rp 0</p>
@@ -792,9 +817,8 @@
             loadProyek();
         }
     }
-
     /* =========================
-       LOGIKA PROGRESS & TAGIHAN
+       LOGIKA PROGRESS & TAGIHAN - VERSI HISTORY
        ========================= */
     async function loadProyekDropdown(){
         const select = document.getElementById('filterProyek');
@@ -825,11 +849,8 @@
             item_pekerjaan: item,
             volume_kontrak: vol,
             satuan: satuan,
-            qty_terpasang: 0,
             harga_satuan: harga,
-            sudah_dibayar: 0,
-            catatan: '',
-            tgl_update: new Date().toISOString().split('T')[0]
+            history: [] // Array untuk simpan semua update
         });
         loadProgress();
     }
@@ -858,14 +879,20 @@
 
         querySnapshot.forEach((docSnap)=>{
             const data = docSnap.data();
-            const nilaiTerpasang = data.qty_terpasang * data.harga_satuan;
-            const persenProgress = data.volume_kontrak > 0? (data.qty_terpasang / data.volume_kontrak * 100).toFixed(1) : 0;
-            const sisaBayar = nilaiTerpasang - data.sudah_dibayar;
+            const history = data.history || [];
+
+            // Sum semua history
+            const totalQty = history.reduce((sum, h) => sum + (parseFloat(h.qty) || 0), 0);
+            const totalBayar = history.reduce((sum, h) => sum + (parseFloat(h.bayar) || 0), 0);
+
+            const nilaiTerpasang = totalQty * data.harga_satuan;
+            const persenProgress = data.volume_kontrak > 0? (totalQty / data.volume_kontrak * 100).toFixed(1) : 0;
+            const sisaBayar = nilaiTerpasang - totalBayar;
 
             totalNilaiTerpasang += nilaiTerpasang;
-            totalSudahDibayar += data.sudah_dibayar;
+            totalSudahDibayar += totalBayar;
             totalVolumeKontrak += data.volume_kontrak;
-            totalQtyTerpasang += data.qty_terpasang;
+            totalQtyTerpasang += totalQty;
 
             const statusBadge = persenProgress == 100? '<span class="badge-success">Selesai</span>' :
                                persenProgress > 0? '<span class="badge-warning">Proses</span>' : '';
@@ -876,15 +903,16 @@
                 <td>${data.item_pekerjaan} ${statusBadge}</td>
                 <td>${data.volume_kontrak}</td>
                 <td>${data.satuan}</td>
-                <td>${data.qty_terpasang}</td>
+                <td>${totalQty}</td>
                 <td>${persenProgress}%</td>
                 <td>${formatRupiah(data.harga_satuan)}</td>
                 <td>${formatRupiah(nilaiTerpasang)}</td>
-                <td>${formatRupiah(data.sudah_dibayar)}</td>
+                <td>${formatRupiah(totalBayar)}</td>
                 <td>${formatRupiah(sisaBayar)}</td>
                 <td>
                     <div class="aksi-wrap">
-                        <button class="btn-edit" onclick="bukaModalProgress('${docSnap.id}')">Update</button>
+                        <button class="btn-edit" onclick="bukaModalProgress('${docSnap.id}')">+ Update</button>
+                        <button class="btn-history" onclick="bukaRiwayat('${docSnap.id}')">Riwayat</button>
                         <button class="btn-delete" onclick="hapusProgress('${docSnap.id}')">Hapus</button>
                     </div>
                 </td>
@@ -906,17 +934,31 @@
         document.getElementById('progressPersenBayar').innerText = persenBayar + '% dari nilai proyek';
     }
 
-    window.bukaModalProgress = async function(id){
+    window.bukaModalProgress = async function(id, historyIndex = null){
         const docSnap = await getDoc(doc(db,'progress',id));
         if(docSnap.exists()){
             const data = docSnap.data();
             document.getElementById('editProgressId').value = id;
             document.getElementById('editItemPekerjaan').value = data.item_pekerjaan;
-            document.getElementById('currentQty').innerText = data.qty_terpasang;
-            document.getElementById('currentBayar').innerText = formatRupiah(data.sudah_dibayar);
-            document.getElementById('editQtyTerpasang').value = data.qty_terpasang;
-            document.getElementById('editSudahDibayar').value = data.sudah_dibayar;
-            document.getElementById('editCatatan').value = data.catatan || '';
+            document.getElementById('editTglUpdate').value = new Date().toISOString().split('T')[0];
+
+            if(historyIndex!== null){
+                // Mode edit history
+                const h = data.history[historyIndex];
+                document.getElementById('editHistoryIndex').value = historyIndex;
+                document.getElementById('editTglUpdate').value = h.tgl;
+                document.getElementById('editQtyUpdate').value = h.qty;
+                document.getElementById('editBayarUpdate').value = h.bayar;
+                document.getElementById('editCatatan').value = h.catatan || '';
+                document.getElementById('modalProgressTitle').innerText = 'Edit Update Progress';
+            } else {
+                // Mode tambah baru
+                document.getElementById('editHistoryIndex').value = '';
+                document.getElementById('editQtyUpdate').value = '';
+                document.getElementById('editBayarUpdate').value = '';
+                document.getElementById('editCatatan').value = '';
+                document.getElementById('modalProgressTitle').innerText = 'Tambah Update Progress';
+            }
         }
         document.getElementById('modalProgress').style.display = 'block';
     }
@@ -927,30 +969,104 @@
 
     window.simpanUpdateProgress = async function(){
         const id = document.getElementById('editProgressId').value;
-        const qty = parseFloat(document.getElementById('editQtyTerpasang').value) || 0;
-        const bayar = parseFloat(document.getElementById('editSudahDibayar').value) || 0;
+        const historyIndex = document.getElementById('editHistoryIndex').value;
+        const tgl = document.getElementById('editTglUpdate').value;
+        const qty = parseFloat(document.getElementById('editQtyUpdate').value) || 0;
+        const bayar = parseFloat(document.getElementById('editBayarUpdate').value) || 0;
         const catatan = document.getElementById('editCatatan').value;
 
-        await updateDoc(doc(db,'progress',id), {
-            qty_terpasang: qty,
-            sudah_dibayar: bayar,
-            catatan: catatan,
-            tgl_update: new Date().toISOString().split('T')[0]
-        });
+        const docRef = doc(db,'progress',id);
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+        let history = data.history || [];
+
+        const newEntry = { tgl, qty, bayar, catatan };
+
+        if(historyIndex!== ''){
+            // Edit existing
+            history[parseInt(historyIndex)] = newEntry;
+        } else {
+            // Tambah baru
+            history.push(newEntry);
+        }
+
+        // Sort by date
+        history.sort((a,b) => new Date(a.tgl) - new Date(b.tgl));
+
+        await updateDoc(docRef, { history });
 
         tutupModal();
         loadProgress();
-        alert('Progress berhasil diupdate');
+        alert('Update berhasil disimpan');
+    }
+
+    window.bukaRiwayat = async function(id){
+        const docSnap = await getDoc(doc(db,'progress',id));
+        if(docSnap.exists()){
+            const data = docSnap.data();
+            document.getElementById('historyProgressId').value = id;
+            document.getElementById('historyItemName').innerText = data.item_pekerjaan;
+
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            const history = data.history || [];
+            if(history.length === 0){
+                historyList.innerHTML = '<p style="text-align:center; color:#666;">Belum ada update</p>';
+            } else {
+                history.forEach((h, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="history-item-header">
+                            <div class="history-item-date">${formatTanggal(h.tgl)}</div>
+                            <div class="history-item-actions">
+                                <button class="btn-mini btn-mini-edit" onclick="bukaModalProgress('${id}', ${idx})">Edit</button>
+                                <button class="btn-mini btn-mini-delete" onclick="hapusHistory('${id}', ${idx})">Hapus</button>
+                            </div>
+                        <div><strong>Qty:</strong> ${h.qty} ${data.satuan} | <strong>Bayar:</strong> ${formatRupiah(h.bayar)}</div>
+                        <div style="margin-top:5px; color:#666; font-size:13px;">${h.catatan || '-'}</div>
+                    `;
+                    historyList.appendChild(div);
+                });
+            }
+        }
+        document.getElementById('modalHistory').style.display = 'block';
+    }
+
+    window.tutupModalHistory = function(){
+        document.getElementById('modalHistory').style.display = 'none';
+    }
+
+    window.tambahUpdateDariHistory = function(){
+        const id = document.getElementById('historyProgressId').value;
+        tutupModalHistory();
+        bukaModalProgress(id);
+    }
+
+    window.hapusHistory = async function(id, index){
+        if(!confirm('Hapus update ini?')) return;
+
+        const docRef = doc(db,'progress',id);
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+        let history = data.history || [];
+        history.splice(index, 1);
+
+        await updateDoc(docRef, { history });
+        bukaRiwayat(id); // Refresh list
+        loadProgress(); // Refresh tabel utama
     }
 
     window.hapusProgress = async function(id){
-        if(confirm('Hapus item pekerjaan ini?')){
+        if(confirm('Hapus item pekerjaan ini beserta semua riwayatnya?')){
             await deleteDoc(doc(db,'progress',id));
             loadProgress();
         }
     }
+
     /* =========================
-       LOGIKA PEMBORONG & BELANJA BARU
+       LOGIKA PEMBORONG & BELANJA
        ========================= */
     async function loadProyekDropdownBorong(){
         const select = document.getElementById('filterProyekBorong');
@@ -969,11 +1085,9 @@
         const proyekId = document.getElementById('filterProyekBorong').value;
         if(!proyekId){ alert('Pilih proyek dulu'); return; }
 
-        // Ambil semua item dari progress
         const qProgress = query(collection(db,'progress'), where('proyekId','==',proyekId));
         const progressSnap = await getDocs(qProgress);
 
-        // Cek data pemborong yang udah ada
         const qBorong = query(collection(db,'pemborong'), where('proyekId','==',proyekId));
         const borongSnap = await getDocs(qBorong);
         const existingProgressIds = borongSnap.docs.map(d => d.data().progressId);
@@ -981,7 +1095,9 @@
         let countAdd = 0;
         for(const docSnap of progressSnap.docs){
             const data = docSnap.data();
-            // Kalau belum ada di pemborong, tambahin
+            const history = data.history || [];
+            const totalQty = history.reduce((sum, h) => sum + (parseFloat(h.qty) || 0), 0);
+
             if(!existingProgressIds.includes(docSnap.id)){
                 await addDoc(collection(db,'pemborong'), {
                     proyekId: proyekId,
@@ -989,11 +1105,9 @@
                     item_pekerjaan: data.item_pekerjaan,
                     volume_kontrak: data.volume_kontrak,
                     satuan: data.satuan,
-                    qty_terpasang: data.qty_terpasang,
+                    qty_terpasang: totalQty,
                     harga_satuan_owner: data.harga_satuan,
-                    nilai_tagihan: data.qty_terpasang * data.harga_satuan,
-
-                    // Field yang diinput manual
+                    nilai_tagihan: totalQty * data.harga_satuan,
                     qty_diborong: 0,
                     harga_satuan_borong: 0,
                     sudah_bayar_borong: 0,
@@ -1002,12 +1116,11 @@
                 });
                 countAdd++;
             } else {
-                // Kalau udah ada, update qty_terpasang & nilai_tagihan aja
                 const borongDoc = borongSnap.docs.find(d => d.data().progressId === docSnap.id);
                 if(borongDoc){
                     await updateDoc(doc(db,'pemborong',borongDoc.id), {
-                        qty_terpasang: data.qty_terpasang,
-                        nilai_tagihan: data.qty_terpasang * data.harga_satuan,
+                        qty_terpasang: totalQty,
+                        nilai_tagihan: totalQty * data.harga_satuan,
                         tgl_update: new Date().toISOString().split('T')[0]
                     });
                 }
@@ -1294,11 +1407,15 @@
     window.onclick = function(event){
         const modalProgress = document.getElementById('modalProgress');
         const modalBorong = document.getElementById('modalPemborong');
+        const modalHistory = document.getElementById('modalHistory');
         if(event.target == modalProgress){
             tutupModal();
         }
         if(event.target == modalBorong){
             tutupModalBorong();
+        }
+        if(event.target == modalHistory){
+            tutupModalHistory();
         }
     }
 
