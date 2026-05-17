@@ -245,14 +245,20 @@
                 <div class="progress-bar"><div class="progress-fill" id="progressBarFisik" style="width:0%"></div></div>
             </div>
             <div class="summary-card">
-                <h3>Pembayaran Masuk</h3>
-                <p id="progressPembayaran">Rp 0</p>
-                <div class="detail" id="progressPersenBayar">0% dari nilai terpasang</div>
-            </div>
-            <div class="summary-card">
-                <h3>Sisa Tagihan</h3>
-                <p id="progressSisaTagihan">Rp 0</p>
-            </div>
+    <h3>Pembayaran Masuk</h3>
+    <p id="progressPembayaran">Rp 0</p>
+    <div class="detail" id="progressPersenBayar">0% dari nilai proyek</div>
+</div>
+
+<div class="summary-card">
+    <h3>Total Retensi</h3>
+    <p id="progressRetensi">Rp 0</p>
+</div>
+
+<div class="summary-card">
+    <h3>Sisa Tagihan</h3>
+    <p id="progressSisaTagihan">Rp 0</p>
+</div>
         </div>
 
         <div class="card">
@@ -275,6 +281,7 @@
                             <th>Harga Satuan</th>
                             <th>Nilai Terpasang</th>
                             <th>Total Dibayar</th>
+                            <th>Retensi 5%</th>
                             <th>Sisa Bayar</th>
                             <th>Aksi</th>
                         </tr>
@@ -887,6 +894,7 @@
 
         let totalNilaiTerpasang = 0;
         let totalSudahDibayar = 0;
+        let totalRetensi = 0;
         let totalVolumeKontrak = 0;
         let totalQtyTerpasang = 0;
         let no = 1;
@@ -900,11 +908,15 @@
             const totalBayar = history.reduce((sum, h) => sum + (parseFloat(h.bayar) || 0), 0);
 
             const nilaiTerpasang = totalQty * data.harga_satuan;
-            const persenProgress = data.volume_kontrak > 0? (totalQty / data.volume_kontrak * 100).toFixed(1) : 0;
-            const sisaBayar = nilaiTerpasang - totalBayar;
+            const persenProgress = data.volume_kontrak > 0 ? (totalQty / data.volume_kontrak * 100).toFixed(1) : 0;
+            
+            const retensi = nilaiTerpasang * 0.05;
+
+            const sisaBayar = nilaiTerpasang - totalBayar - retensi;
 
             totalNilaiTerpasang += nilaiTerpasang;
             totalSudahDibayar += totalBayar;
+            totalRetensi += retensi;
             totalVolumeKontrak += data.volume_kontrak;
             totalQtyTerpasang += totalQty;
 
@@ -922,6 +934,7 @@
                 <td>${formatRupiah(data.harga_satuan)}</td>
                 <td>${formatRupiah(nilaiTerpasang)}</td>
                 <td>${formatRupiah(totalBayar)}</td>
+                <td>${formatRupiah(retensi)}</td>
                 <td>${formatRupiah(sisaBayar)}</td>
                 <td>
                     <div class="aksi-wrap">
@@ -935,14 +948,20 @@
         });
 
         const persenFisik = totalVolumeKontrak > 0? (totalQtyTerpasang / totalVolumeKontrak * 100).toFixed(1) : 0;
-        updateSummaryProgress(nilaiProyek, persenFisik, totalSudahDibayar, totalNilaiTerpasang - totalSudahDibayar);
-    }
+        updateSummaryProgress(
+    nilaiProyek,
+    persenFisik,
+    totalSudahDibayar,
+    totalRetensi,
+    totalNilaiTerpasang - totalSudahDibayar - totalRetensi
+);
 
-    function updateSummaryProgress(nilaiProyek, persenFisik, pembayaran, sisa){
+    function updateSummaryProgress(nilaiProyek, persenFisik, pembayaran, retensi, sisa){
         document.getElementById('progressTotalProyek').innerText = formatRupiah(nilaiProyek);
         document.getElementById('progressFisik').innerText = persenFisik + '%';
         document.getElementById('progressBarFisik').style.width = persenFisik + '%';
         document.getElementById('progressPembayaran').innerText = formatRupiah(pembayaran);
+        document.getElementById('progressRetensi').innerText = formatRupiah(retensi);
         document.getElementById('progressSisaTagihan').innerText = formatRupiah(sisa);
         const persenBayar = nilaiProyek > 0? (pembayaran / nilaiProyek * 100).toFixed(1) : 0;
         document.getElementById('progressPersenBayar').innerText = persenBayar + '% dari nilai proyek';
