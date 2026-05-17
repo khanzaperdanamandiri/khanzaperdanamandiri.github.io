@@ -1186,8 +1186,14 @@
         querySnapshot.forEach((docSnap)=>{
             const data = docSnap.data();
             const biayaBorong = (data.qty_diborong || 0) * (data.harga_satuan_borong || 0);
-            const margin = (data.nilai_tagihan || 0) - biayaBorong;
-            const persenMargin = data.nilai_tagihan > 0? (margin / data.nilai_tagihan * 100).toFixed(1) : 0;
+            // RETENSI 5% dari nilai tagihan
+            const retensi = (data.nilai_tagihan || 0) * 0.05;
+            
+            // MARGIN BARU
+            const margin = (data.nilai_tagihan || 0) - biayaBorong - retensi;
+            const persenMargin = data.nilai_tagihan > 0
+  ? (margin / data.nilai_tagihan * 100).toFixed(1)
+  : 0;
 
             totalNilaiTagihan += data.nilai_tagihan || 0;
             totalBiayaBorong += biayaBorong;
@@ -1221,7 +1227,14 @@
             tbody.appendChild(row);
         });
 
-        updateSummaryBorong(totalNilaiTagihan, totalBiayaBorong, totalNilaiTagihan - totalBiayaBorong, totalBayarBorong);
+        const totalRetensi = totalNilaiTagihan * 0.05;
+
+updateSummaryBorong(
+    totalNilaiTagihan,
+    totalBiayaBorong,
+    totalNilaiTagihan - totalBiayaBorong - totalRetensi,
+    totalBayarBorong
+);
     }
 
     function updateSummaryBorong(nilaiTagihan, biayaBorong, margin, sudahBayar){
